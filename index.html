@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EzPing -Best Free Ping Optimizer</title>
+  <link rel="icon" href="assets/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top left, #0f0f10, #1a1a1a 70%);
+      color: #fff;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    nav {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      backdrop-filter: blur(16px);
+      background: rgba(20, 20, 20, 0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 6%;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+    nav img { height: 50px; transition: transform 0.3s ease; cursor: pointer; }
+    nav img:hover { transform: scale(1.1); }
+    nav ul { list-style: none; display: flex; gap: 32px; }
+    nav a { text-decoration: none; color: #ddd; font-weight: 500; transition: 0.3s; }
+    nav a:hover { color: #7B3FF2; }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 160px 8% 100px;
+      gap: 80px;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: fadeIn 1s ease forwards;
+      flex-direction: row;
+    }
+    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+    .hero img {
+      max-width: 90%; 
+      border-radius: 24px;
+      object-fit: contain;
+      background: rgba(123,63,242,0.1);
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(123,63,242,0.35);
+      padding: 16px;
+      animation: float 4s ease-in-out infinite, scalePulse 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 35px rgba(123,63,242,0.5));
+      cursor: pointer;
+      transition: transform 0.4s ease, filter 0.4s ease;
+    }
+    .hero img:hover { transform: scale(1.08); filter: drop-shadow(0 0 45px rgba(123,63,242,0.6)); }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes scalePulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+
+    .hero-content { flex: 1; max-width: 600px; animation: slideIn 1.2s ease forwards; opacity: 0; }
+    @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+    .hero-content h1 {
+      font-size: 3.2rem;
+      background: linear-gradient(90deg, #7B3FF2, #AE7BFF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.1;
+      animation: fadeText 1.5s ease forwards;
+      opacity: 0;
+    }
+    .hero-content p {
+      color: #ccc;
+      font-size: 1.15rem;
+      margin-bottom: 36px;
+      line-height: 1.6;
+      animation: fadeText 2s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeText { to { opacity: 1; } }
+
+    .buttons { display: flex; gap: 20px; flex-wrap: wrap; }
+    .btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn.primary {
+      background: linear-gradient(90deg, #7B3FF2, #AE7BFF);
+      color: white;
+      animation: pulseBtn 2s infinite;
+    }
+    .btn.primary:hover { filter: brightness(1.15); transform: translateY(-3px) scale(1.05); }
+    .btn.secondary {
+      background: #2a2a2a;
+      color: #ccc;
+      border: 1px solid #3a3a3a;
+      animation: pulseBtn 2.5s infinite;
+    }
+    .btn.secondary:hover { color: white; border-color: #7B3FF2; transform: translateY(-3px) scale(1.05); }
+    @keyframes pulseBtn { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+    .features {
+      text-align: center;
+      padding: 140px 10%;
+      background: linear-gradient(180deg, #151515 0%, #0f0f10 100%);
+      animation: fadeIn 1s ease forwards;
+    }
+    .features h2 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin-bottom: 50px;
+      background: linear-gradient(90deg, #7B3FF2, #AE7BFF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeText 1s ease forwards;
+      opacity: 0;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+      margin-top: 20px;
+    }
+    .feature {
+      background: #1f1f1f;
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid #2b2b2b;
+      transition: all 0.4s ease;
+      animation: fadeText 1.2s ease forwards;
+      opacity: 0;
+    }
+    .feature:hover { border-color: #7B3FF2; transform: translateY(-5px) scale(1.02); }
+    .feature h3 { color: #7B3FF2; font-size: 1.4rem; margin-bottom: 10px; }
+    .feature p { color: #aaa; font-size: 0.95rem; line-height: 1.6; }
+
+    .faq { padding: 100px 10%; text-align: center; background: #101010; animation: fadeIn 1s ease forwards; }
+    .faq h2 {
+      font-size: 2.4rem;
+      margin-bottom: 40px;
+      background: linear-gradient(90deg, #7B3FF2, #AE7BFF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeText 1s ease forwards;
+      opacity: 0;
+    }
+    details {
+      max-width: 700px;
+      margin: 0 auto 20px;
+      background: #1c1c1c;
+      border-radius: 12px;
+      padding: 18px 26px;
+      border: 1px solid #2b2b2b;
+      text-align: left;
+      transition: all 0.35s ease;
+    }
+    details[open] { border-color: #7B3FF2; background: #191919; transform: translateY(-3px); }
+    summary { font-size: 1.1rem; font-weight: 600; cursor: pointer; color: #fff; list-style: none; }
+    details p { color: #aaa; margin-top: 10px; line-height: 1.6; }
+
+    footer {
+      text-align: center;
+      padding: 50px 10%;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      background: #0f0f10;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    footer a { color: #7B3FF2; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 950px) {
+      .hero { flex-direction: column; text-align: center; }
+      .hero img { max-width: 95%; margin-bottom: 24px; }
+      .hero-content { max-width: 95%; }
+      .buttons { justify-content: center; }
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.95);
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.8s ease forwards;
+    }
+    .modal img {
+      max-width: 90%; /* fit nicely in modal */
+      max-height: 90%;
+      border-radius: 16px;
+      transition: transform 0.3s ease;
+      animation: float 4s ease-in-out infinite, scalePulse 2s ease-in-out infinite;
+    }
+    .modal img:hover { transform: scale(1.05); }
+    .modal:target { display: flex; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+      <img src="assets/logo.png" alt="EzPing Logo">
+    </div>
+    <ul>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="https://github.com/WraithMC/FastPing" target="_blank">GitHub</a></li>
+      <li><a href="https://discord.gg/T8GFc6ryGy" target="_blank">Discord</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>EzPing — Ultimate Network Optimizer</h1>
+      <p>EzPing is safe, lightweight, and open-source. It reduces latency, smooths game performance, and boosts connection stability — 100% free, no cheats, no risk.</p>
+      <div class="buttons">
+        <a href="assets/dist/FastPing.exe" class="btn primary" download>Download EzPing</a>
+        <a href="https://github.com/WraithMC/FastPing" class="btn secondary" target="_blank">View Source</a>
+      </div>
+    </div>
+    <a href="#uiModal"><img src="assets/screenshots/UI.png" alt="EzPing Showcase"></a>
+  </section>
+
+  <div id="uiModal" class="modal">
+    <a href="#!" style="position:absolute;top:20px;right:30px;font-size:48px;color:#fff;text-decoration:none;">&times;</a>
+    <img src="assets/screenshots/UI.png" alt="EzPing Showcase Modal">
+  </div>
+
+  <section id="features" class="features">
+    <h2>Why Choose EzPing?</h2>
+    <div class="feature-grid">
+      <div class="feature">
+        <h3>Low Latency</h3>
+        <p>Instantly optimizes your network stack for faster response times.</p>
+      </div>
+      <div class="feature">
+        <h3>Smart Packets</h3>
+        <p>Dynamically adjusts packet handling to reduce jitter and improve stability.</p>
+      </div>
+      <div class="feature">
+        <h3>Resource Friendly</h3>
+        <p>Runs smoothly with minimal CPU and memory usage — built for efficiency.</p>
+      </div>
+      <div class="feature">
+        <h3>Completely Free</h3>
+        <p>No payments or limits. 100% free and open-source forever.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <details>
+      <summary>Is EzPing safe to use?</summary>
+      <p>Yes, EzPing is completely safe. It only tweaks Windows networking settings — no cheats, no exploits.</p>
+    </details>
+    <details>
+      <summary>Does it really improve ping?</summary>
+      <p>It helps stabilize and lower latency depending on your setup and connection type.</p>
+    </details>
+    <details>
+      <summary>Is it open-source?</summary>
+      <p>Yes! You can freely inspect, fork, or modify the code on GitHub.</p>
+    </details>
+    <details>
+      <summary>Is it free?</summary>
+      <p>Absolutely. EzPing is 100% free and always will be.</p>
+    </details>
+  </section>
+
+  <footer>
+    <p>© 2025 EzPing | <a href="https://github.com/WraithMC/FastPing">GitHub</a> | <a href="https://discord.gg/T8GFc6ryGy">Discord</a></p>
+  </footer>
+
+</body>
+</html>
+<button id="scrollTopBtn" style="
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 12px 16px;
+  border-radius: 50%;
+  background: #7B3FF2;
+  border: none;
+  color: white;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(123,63,242,0.6);
+  transition: all 0.3s ease;
+  display: none;
+  z-index: 1500;">↑</button>
+
+<canvas id="particles" style="
+  position: fixed;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+"></canvas>
+
+<script>
+const scrollBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', () => {
+  scrollBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
+});
+scrollBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 1;
+    this.speedX = Math.random() * 0.5 - 0.25;
+    this.speedY = Math.random() * 0.5 - 0.25;
+    this.color = `rgba(123,63,242,${Math.random()*0.7+0.3})`;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if(this.x > canvas.width) this.x = 0;
+    if(this.x < 0) this.x = canvas.width;
+    if(this.y > canvas.height) this.y = 0;
+    if(this.y < 0) this.y = canvas.height;
+  }
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+
+function initParticles() {
+  particles = [];
+  for(let i = 0; i < 100; i++) {
+    particles.push(new Particle());
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+
+initParticles();
+animateParticles();
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+<button id="scrollTopBtn" style="
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 12px 16px;
+  border-radius: 50%;
+  background: #7B3FF2;
+  border: none;
+  color: white;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(123,63,242,0.6);
+  transition: all 0.3s ease;
+  display: none;
+  z-index: 1500;">↑</button>
+
+<canvas id="particles" style="
+  position: fixed;
+  top:0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+"></canvas>
+
+<script>
+const scrollBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', () => {
+  scrollBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
+});
+scrollBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 1;
+    this.speedX = Math.random() * 0.5 - 0.25;
+    this.speedY = Math.random() * 0.5 - 0.25;
+    this.color = `rgba(123,63,242,${Math.random()*0.7+0.3})`;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if(this.x > canvas.width) this.x = 0;
+    if(this.x < 0) this.x = canvas.width;
+    if(this.y > canvas.height) this.y = 0;
+    if(this.y < 0) this.y = canvas.height;
+  }
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+
+function initParticles() {
+  particles = [];
+  for(let i = 0; i < 120; i++) {
+    particles.push(new Particle());
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  connectParticles();
+  requestAnimationFrame(animateParticles);
+}
+
+function connectParticles() {
+  for(let a = 0; a < particles.length; a++) {
+    for(let b = a; b < particles.length; b++) {
+      let dx = particles[a].x - particles[b].x;
+      let dy = particles[a].y - particles[b].y;
+      let distance = Math.sqrt(dx*dx + dy*dy);
+      if(distance < 100) {
+        ctx.strokeStyle = `rgba(123,63,242,${1 - distance/100})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(particles[a].x, particles[a].y);
+        ctx.lineTo(particles[b].x, particles[b].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+initParticles();
+animateParticles();
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+const buttons = document.querySelectorAll('.btn');
+buttons.forEach(btn => {
+  btn.addEventListener('mouseenter', () => {
+    btn.style.transform = 'scale(1.08)';
+    btn.style.filter = 'brightness(1.2) drop-shadow(0 0 15px #7B3FF2)';
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = 'scale(1)';
+    btn.style.filter = 'none';
+  });
+});
+</script>
+
