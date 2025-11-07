@@ -1,3 +1,16 @@
+import sys, os
+from pathlib import Path
+
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and PyInstaller"""
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+LOGO_PATH = resource_path("logo.ico")
+
 import customtkinter as ctk
 import psutil
 import subprocess
@@ -10,11 +23,19 @@ import webbrowser
 from tkinter import messagebox
 from pathlib import Path
 import math
+from PIL import Image
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 CONFIG_FILE = Path("config.json")
-LOGO_PATH = Path("logo.png")
-if not LOGO_PATH.exists():
-    LOGO_PATH = Path("logo.ico")
+LOGO_PATH = resource_path("logo.png")
+if not os.path.exists(LOGO_PATH):
+    LOGO_PATH = resource_path("logo.ico")
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -212,9 +233,8 @@ header.pack(fill="x", padx=10, pady=(10, 15))
 left_h = ctk.CTkFrame(header, fg_color=HEADER_BG)
 left_h.pack(side="left", padx=10, pady=10)
 
-if LOGO_PATH.exists():
+if os.path.exists(LOGO_PATH):
     try:
-        from PIL import Image
         logo_img = ctk.CTkImage(light_image=Image.open(LOGO_PATH), dark_image=Image.open(LOGO_PATH), size=(40, 40))
         ctk.CTkLabel(left_h, image=logo_img, text="").pack(side="left", padx=(0, 10))
     except:
