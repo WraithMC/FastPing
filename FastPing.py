@@ -1,17 +1,18 @@
-import ctypes, sys, os, json, subprocess, time, psutil, winreg, webbrowser
+import ctypes, sys, os, math, subprocess, time, json, winreg, webbrowser
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageTk
 import customtkinter as ctk
+import psutil
 from tkinter import messagebox
 
 def run_as_admin():
-    if ctypes.windll.shell32.IsUserAnAdmin():
+    if getattr(ctypes, "windll", None) and ctypes.windll.shell32.IsUserAnAdmin():
         return True
     try:
         params = " ".join([f'"{arg}"' for arg in sys.argv])
         ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, params, None, 1)
         sys.exit()
-    except:
+    except Exception:
         return False
 
 run_as_admin()
@@ -19,11 +20,11 @@ run_as_admin()
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS
-    except:
+    except Exception:
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
-CONFIG_DIR = Path(os.getenv("APPDATA")) / ".minecraft" / "FastPing"
+CONFIG_DIR = Path(os.getenv("APPDATA", "")) / ".minecraft" / "FastPing" /  "config"/ "Config"
 CONFIG_DIR.mkdir(parents=True, exist_ok=True)
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
@@ -32,41 +33,53 @@ if not os.path.exists(LOGO_PATH):
     LOGO_PATH = resource_path("logo.ico")
 
 ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("green")
+ctk.set_default_color_theme("dark-blue")
 
-APP_SIZE = "960x640"
-ACCENT = "#00FFA3"
-ACCENT_HOVER = "#00CC84"
-TEXT = "#FFFFFF"
-CARD_BG = "#1C1C1C"
-BG = "#0F0F0F"
-HEADER_BG = "#161616"
+APP_SIZE = "980x620"
+BG = "#0b0f14"
+PANEL = "#071118"
+SUBPANEL = "#0d1720"
+ACCENT_A = "#7C4DFF"
+ACCENT_B = "#00D1FF"
+ACCENT = ("#7C4DFF", "#00D1FF")
+TEXT = "#E6EDF3"
+MUTED = "#9AA5B1"
+CARD = "#0f1720"
+BUTTON_BG = "#0f222a"
+BUTTON_HOVER = "#111823"
+BUTTON_BORDER = "#15232a"
+SHADOW = "#061014"
 
 PRIORITY_CLASSES = {
-    "Idle": psutil.IDLE_PRIORITY_CLASS,
-    "Below Normal": psutil.BELOW_NORMAL_PRIORITY_CLASS,
-    "Normal": psutil.NORMAL_PRIORITY_CLASS,
-    "Above Normal": psutil.ABOVE_NORMAL_PRIORITY_CLASS,
-    "High": psutil.HIGH_PRIORITY_CLASS,
+    "Idle": getattr(psutil, "IDLE_PRIORITY_CLASS", 64),
+    "Below Normal": getattr(psutil, "BELOW_NORMAL_PRIORITY_CLASS", 16384),
+    "Normal": getattr(psutil, "NORMAL_PRIORITY_CLASS", 32),
+    "Above Normal": getattr(psutil, "ABOVE_NORMAL_PRIORITY_CLASS", 32768),
+    "High": getattr(psutil, "HIGH_PRIORITY_CLASS", 128),
+    "Realtime": getattr(psutil, "REALTIME_PRIORITY_CLASS", 256),
 }
 
 def is_windows(): return sys.platform.startswith("win")
 
-def run_netsh(cmd: str):
+def run_netsh(cmd: str, timeout=6):
     try:
-        out = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-        return out.returncode, (out.stdout + out.stderr).strip()
+        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        out, _ = p.communicate(timeout=timeout)
+        return p.returncode, (out or "").strip()
+    except subprocess.TimeoutExpired:
+        p.kill()
+        return 1, "Timed out"
     except Exception as e:
         return 1, str(e)
 
 def apply_tcp_tweaks(enable: bool):
     if not is_windows(): return 1, "Unsupported"
     level = "normal" if enable else "disabled"
-    run_netsh(f"netsh interface tcp set global autotuninglevel={level}")
-    run_netsh(f"netsh interface tcp set global ecncapability={'enabled' if enable else 'disabled'}")
-    run_netsh(f"netsh interface tcp set global rss={'enabled' if enable else 'disabled'}")
-    run_netsh(f"netsh interface tcp set global dca={'enabled' if enable else 'disabled'}")
-    return 0, "Smart packet tuning applied" if enable else "Smart packet reverted"
+    run_netsh(f'netsh interface tcp set global autotuninglevel={level}')
+    run_netsh(f'netsh interface tcp set global ecncapability={"enabled" if enable else "disabled"}')
+    run_netsh(f'netsh interface tcp set global rss={"enabled" if enable else "disabled"}')
+    run_netsh(f'netsh interface tcp set global dca={"enabled" if enable else "disabled"}')
+    return 0, "Applied" if enable else "Reverted"
 
 def set_low_latency_mode(enable: bool):
     if not is_windows(): return 1, "Unsupported"
@@ -74,82 +87,63 @@ def set_low_latency_mode(enable: bool):
         if enable:
             run_netsh("netsh interface tcp set global congestionprovider=ctcp")
             run_netsh("netsh interface tcp set global timestamps=disabled")
-            subprocess.run(
-                'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TcpAckFrequency /t REG_DWORD /d 1 /f',
-                shell=True
-            )
-            subprocess.run(
-                'reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TCPNoDelay /t REG_DWORD /d 1 /f',
-                shell=True
-            )
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TcpAckFrequency /t REG_DWORD /d 1 /f', shell=True)
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TCPNoDelay /t REG_DWORD /d 1 /f', shell=True)
         else:
             run_netsh("netsh interface tcp set global congestionprovider=none")
             run_netsh("netsh interface tcp set global timestamps=enabled")
-            subprocess.run(
-                'reg delete "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TcpAckFrequency /f',
-                shell=True
-            )
-            subprocess.run(
-                'reg delete "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TCPNoDelay /f',
-                shell=True
-            )
-        return 0, "Low latency enabled" if enable else "Low latency disabled"
+            subprocess.run('reg delete "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TcpAckFrequency /f', shell=True)
+            subprocess.run('reg delete "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TCPNoDelay /f', shell=True)
+        return 0, "Done"
     except Exception as e:
         return 1, str(e)
 
 def set_java_priority(name: str) -> int:
     if not is_windows(): return 0
-    prio = PRIORITY_CLASSES.get(name, psutil.NORMAL_PRIORITY_CLASS)
+    prio = PRIORITY_CLASSES.get(name, PRIORITY_CLASSES.get("Normal", 32))
     changed = 0
-    for proc in psutil.process_iter(["name"]):
+    for proc in psutil.process_iter(attrs=("name","pid")):
         try:
-            if proc.info.get("name","").lower() in ["java.exe","javaw.exe"]:
-                proc.nice(prio)
+            nm = (proc.info.get("name") or "").lower()
+            if nm in ("java.exe","javaw.exe"):
+                p = psutil.Process(proc.info["pid"])
+                p.nice(prio)
                 changed += 1
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             continue
     return changed
-
-def change_dns(region: str):
-    dns_map = {"US":"8.8.8.8","EU":"1.1.1.1","ASIA":"8.8.4.4"}
-    dns = dns_map.get(region.upper(), "8.8.8.8")
-    interfaces = subprocess.run('netsh interface show interface', shell=True, capture_output=True, text=True).stdout
-    for line in interfaces.splitlines():
-        if "Connected" in line:
-            name = line.split()[-1]
-            subprocess.run(f'netsh interface ip set dns name="{name}" static {dns}', shell=True)
 
 _last_net = None
 _last_time = None
 
 def save_config():
     cfg = {
-        "smart_packets": smart_packets_var.get(),
+        "smart_packets": bool(smart_packets_var.get()),
         "tuning": tuning_var.get(),
         "priority": priority_var.get(),
-        "responsiveness": responsiveness_var.get(),
-        "low_latency": low_latency_var.get(),
-        "region_dns": region_var.get()
+        "responsiveness": int(responsiveness_var.get()),
+        "low_latency": bool(low_latency_var.get()),
     }
     try:
-        with open(CONFIG_FILE, "w") as f: json.dump(cfg, f, indent=2)
+        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
+            json.dump(cfg, f, indent=2)
         status_var.set("Settings saved")
     except Exception as e:
-        status_var.set(f"Save failed: {e}")
+        status_var.set(f"Save failed")
 
 def load_config():
-    if CONFIG_FILE.exists():
-        try:
-            data = json.load(open(CONFIG_FILE))
+    try:
+        if CONFIG_FILE.exists():
+            with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
             smart_packets_var.set(bool(data.get("smart_packets", False)))
             tuning_var.set(data.get("tuning", "Balanced"))
             priority_var.set(data.get("priority", "Normal"))
             responsiveness_var.set(int(data.get("responsiveness", 50)))
             low_latency_var.set(bool(data.get("low_latency", False)))
-            region_var.set(data.get("region_dns", "US"))
             status_var.set("Config loaded")
-        except Exception as e:
-            status_var.set(f"Load failed: {e}")
+    except Exception:
+        status_var.set("Config load failed")
 
 def init_net_counters():
     global _last_net, _last_time
@@ -164,60 +158,87 @@ def update_network_speed_smooth():
         elapsed = max(now - _last_time, 0.0001)
         sent = (net.bytes_sent - _last_net.bytes_sent) / (1024*1024) / elapsed
         recv = (net.bytes_recv - _last_net.bytes_recv) / (1024*1024) / elapsed
-        upload_speed_var.set(f"{sent:.2f} MB/s")
-        download_speed_var.set(f"{recv:.2f} MB/s")
+        try:
+            current_upload = float(upload_speed_var.get().split()[0])
+            current_download = float(download_speed_var.get().split()[0])
+        except Exception:
+            current_upload, current_download = 0.0, 0.0
+        resp = max(0.05, (100 - responsiveness_var.get()) / 150)
+        upload_speed_var.set(f"{current_upload + (sent-current_upload)*resp:.2f} MB/s")
+        download_speed_var.set(f"{current_download + (recv-current_download)*resp:.2f} MB/s")
         _last_net = net
         _last_time = now
-    except:
+    except Exception:
         upload_speed_var.set("0.00 MB/s")
         download_speed_var.set("0.00 MB/s")
     finally:
-        app.after(400, update_network_speed_smooth)
+        app.after(700, update_network_speed_smooth)
 
-def smooth_progress(bar, target, speed=0.08):
+def smooth_progress(bar, target, speed=0.06):
     current = bar.get()
-    if abs(current - target) < 0.005:
+    if abs(current - target) < 0.004:
         bar.set(target)
         return
-    bar.set(current + (target-current)*speed)
-    app.after(16, lambda: smooth_progress(bar, target, speed))
+    step = (target - current) * speed
+    bar.set(max(0.0, min(1.0, current + step)))
+    app.after(18, lambda: smooth_progress(bar, target, speed))
 
 def update_resources_smooth():
     try:
-        cpu = psutil.cpu_percent(interval=None)/100
-        ram = psutil.virtual_memory().percent/100
-        smooth_progress(cpu_bar, cpu)
-        smooth_progress(ram_bar, ram)
+        cpu = psutil.cpu_percent(interval=None)/100.0
+        ram = psutil.virtual_memory().percent/100.0
+        smooth_progress(cpu_bar, cpu, speed=0.08)
+        smooth_progress(ram_bar, ram, speed=0.08)
         cpu_usage_var.set(f"{cpu*100:.0f}%")
         ram_usage_var.set(f"{ram*100:.0f}%")
+    except Exception:
+        cpu_usage_var.set("N/A")
+        ram_usage_var.set("N/A")
     finally:
-        app.after(400, update_resources_smooth)
+        app.after(500, update_resources_smooth)
 
 def apply_settings():
-    save_config()
-    apply_tcp_tweaks(smart_packets_var.get())
-    set_low_latency_mode(low_latency_var.get())
-    set_java_priority(priority_var.get())
-    change_dns(region_var.get())
-    status_var.set("Settings applied")
+    try:
+        save_config()
+        apply_tcp_tweaks(bool(smart_packets_var.get()))
+        set_low_latency_mode(bool(low_latency_var.get()))
+        changed = set_java_priority(priority_var.get())
+        status_var.set("Settings applied")
+    except Exception:
+        status_var.set("Apply failed")
 
 def add_to_startup():
-    if not is_windows(): return
-    path = os.path.realpath(sys.argv[0])
-    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, winreg.KEY_SET_VALUE)
-    winreg.SetValueEx(key, "FastPing", 0, winreg.REG_SZ, path)
-    winreg.CloseKey(key)
-    status_var.set("Added to startup")
+    if not is_windows():
+        status_var.set("Startup only for Windows")
+        return
+    try:
+        path = os.path.realpath(sys.argv[0])
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, winreg.KEY_SET_VALUE)
+        winreg.SetValueEx(key, "FastPing", 0, winreg.REG_SZ, path)
+        winreg.CloseKey(key)
+        status_var.set("Added to startup")
+    except Exception:
+        status_var.set("Startup failed")
 
 def open_discord():
     webbrowser.open("https://discord.gg/T8GFc6ryGy")
+
+def load_logo(path, size):
+    try:
+        img = Image.open(path).convert("RGBA")
+        img = img.resize(size, Image.LANCZOS)
+        return ImageTk.PhotoImage(img)
+    except Exception:
+        return None
 
 app = ctk.CTk()
 app.geometry(APP_SIZE)
 app.title("FastPing — By WraithMC")
 app.configure(fg_color=BG)
-try: app.iconbitmap(LOGO_PATH)
-except: pass
+try:
+    app.iconbitmap(LOGO_PATH)
+except Exception:
+    pass
 
 upload_speed_var = ctk.StringVar(value="0.00 MB/s")
 download_speed_var = ctk.StringVar(value="0.00 MB/s")
@@ -228,84 +249,84 @@ tuning_var = ctk.StringVar(value="Balanced")
 priority_var = ctk.StringVar(value="Normal")
 responsiveness_var = ctk.IntVar(value=50)
 low_latency_var = ctk.BooleanVar(value=False)
-region_var = ctk.StringVar(value="US")
 status_var = ctk.StringVar(value="Ready")
 
-main_frame = ctk.CTkFrame(app, fg_color=BG, corner_radius=20)
-main_frame.pack(fill="both", expand=True, padx=15, pady=15)
+main = ctk.CTkFrame(app, fg_color=BG, corner_radius=14)
+main.pack(fill="both", expand=True, padx=18, pady=18)
 
-header = ctk.CTkFrame(main_frame, fg_color=HEADER_BG, corner_radius=15)
-header.pack(fill="x", padx=10, pady=(10,12))
+header = ctk.CTkFrame(main, fg_color=SUBPANEL, corner_radius=12)
+header.pack(fill="x", padx=6, pady=(6,12))
 
-left_h = ctk.CTkFrame(header, fg_color=HEADER_BG)
-left_h.pack(side="left", padx=10)
+logo_img = load_logo(LOGO_PATH, (44,44))
+left_h = ctk.CTkFrame(header, fg_color=SUBPANEL, corner_radius=8)
+left_h.pack(side="left", padx=12, pady=8)
+if logo_img:
+    ctk.CTkLabel(left_h, image=logo_img, text="").pack(side="left", padx=(0,10))
+ctk.CTkLabel(left_h, text="FastPing", font=("Segoe UI", 22, "bold"), text_color=ACCENT_A).pack(side="left")
 
-if os.path.exists(LOGO_PATH):
-    try:
-        logo_img = ctk.CTkImage(light_image=Image.open(LOGO_PATH), dark_image=Image.open(LOGO_PATH), size=(40, 40))
-        ctk.CTkLabel(left_h, image=logo_img, text="").pack(side="left", padx=(0,10))
-    except: pass
+center_h = ctk.CTkFrame(header, fg_color=SUBPANEL)
+center_h.pack(side="left", padx=6, pady=8, expand=True, fill="x")
+ctk.CTkLabel(center_h, text="Optimize network, reduce lag, tune Java", font=("Segoe UI", 11), text_color=MUTED).pack(anchor="w")
 
-ctk.CTkLabel(left_h, text="FastPing", font=("Segoe UI", 28, "bold"), text_color=ACCENT).pack(side="left")
+right_h = ctk.CTkFrame(header, fg_color=SUBPANEL)
+right_h.pack(side="right", padx=12, pady=8)
+ctk.CTkButton(right_h, text="Join Discord", command=open_discord, fg_color=BUTTON_BG, hover_color=BUTTON_HOVER, text_color=TEXT, corner_radius=10, width=120, border_width=1, border_color=BUTTON_BORDER).pack(side="right", padx=8)
+ctk.CTkButton(right_h, text="Apply", command=apply_settings, fg_color=ACCENT_A, hover_color=ACCENT_B, text_color="#0b0f14", corner_radius=10, width=120).pack(side="right", padx=8)
 
-right_h = ctk.CTkFrame(header, fg_color=HEADER_BG)
-right_h.pack(side="right", padx=10)
+content = ctk.CTkFrame(main, fg_color=BG, corner_radius=12)
+content.pack(fill="both", expand=True, padx=6, pady=6)
 
-ctk.CTkButton(right_h, text="Join Discord", command=open_discord, fg_color="#5865F2", hover_color="#4752C4", text_color="white", corner_radius=12, width=130).pack(side="right", padx=8)
-ctk.CTkButton(right_h, text="Apply Settings", command=apply_settings, fg_color=ACCENT, hover_color=ACCENT_HOVER, text_color="white", corner_radius=12, width=150).pack(side="right", padx=8)
+left = ctk.CTkFrame(content, fg_color=CARD, corner_radius=12)
+left.pack(side="left", fill="both", expand=True, padx=(6,3), pady=6)
 
-content = ctk.CTkFrame(main_frame, fg_color=BG, corner_radius=15)
-content.pack(fill="both", expand=True, padx=8, pady=8)
+right = ctk.CTkFrame(content, fg_color=CARD, corner_radius=12)
+right.pack(side="right", fill="both", expand=True, padx=(3,6), pady=6)
 
-left = ctk.CTkFrame(content, fg_color=CARD_BG, corner_radius=16)
-left.pack(side="left", fill="both", expand=True, padx=(8,4), pady=8)
+ctk.CTkLabel(left, text="Network", font=("Segoe UI", 15, "bold"), text_color=TEXT).pack(anchor="w", padx=12, pady=(12,6))
+net_card = ctk.CTkFrame(left, fg_color=SUBPANEL, corner_radius=10)
+net_card.pack(fill="x", padx=12, pady=6)
+ctk.CTkLabel(net_card, text="Download", text_color=MUTED).grid(row=0, column=0, sticky="w", padx=12, pady=10)
+ctk.CTkLabel(net_card, textvariable=download_speed_var, text_color=ACCENT_B).grid(row=0, column=1, sticky="e", padx=12, pady=10)
+ctk.CTkLabel(net_card, text="Upload", text_color=MUTED).grid(row=1, column=0, sticky="w", padx=12, pady=(0,12))
+ctk.CTkLabel(net_card, textvariable=upload_speed_var, text_color=ACCENT_B).grid(row=1, column=1, sticky="e", padx=12, pady=(0,12))
 
-right = ctk.CTkFrame(content, fg_color=CARD_BG, corner_radius=16)
-right.pack(side="right", fill="both", expand=True, padx=(4,8), pady=8)
+ctk.CTkLabel(left, text="Features", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
+feat = ctk.CTkFrame(left, fg_color=SUBPANEL, corner_radius=10)
+feat.pack(fill="x", padx=12, pady=8)
+ctk.CTkCheckBox(feat, text="Smart Packets", variable=smart_packets_var, hover_color=ACCENT_A, text_color=TEXT, fg_color="#09111a").pack(anchor="w", padx=12, pady=8)
+ctk.CTkCheckBox(feat, text="Low Latency Mode", variable=low_latency_var, hover_color=ACCENT_A, text_color=TEXT, fg_color="#09111a").pack(anchor="w", padx=12, pady=(0,8))
 
-ctk.CTkLabel(left, text="Network Status", font=("Segoe UI", 18, "bold"), text_color=TEXT).pack(anchor="w", padx=12, pady=(12,6))
-net_frame = ctk.CTkFrame(left, fg_color=HEADER_BG, corner_radius=12)
-net_frame.pack(fill="x", padx=12, pady=8)
-ctk.CTkLabel(net_frame, text="Download", text_color=TEXT).grid(row=0, column=0, sticky="w", padx=12, pady=6)
-ctk.CTkLabel(net_frame, textvariable=download_speed_var, text_color=ACCENT).grid(row=0, column=1, sticky="e", padx=12, pady=6)
-ctk.CTkLabel(net_frame, text="Upload", text_color=TEXT).grid(row=1, column=0, sticky="w", padx=12, pady=6)
-ctk.CTkLabel(net_frame, textvariable=upload_speed_var, text_color=ACCENT).grid(row=1, column=1, sticky="e", padx=12, pady=6)
+actions = ctk.CTkFrame(left, fg_color=SUBPANEL, corner_radius=10)
+actions.pack(fill="x", padx=12, pady=(6,12))
+ctk.CTkButton(actions, text="Test Netsh", command=lambda: messagebox.showinfo("Netsh", str(run_netsh("netsh interface tcp show global"))), fg_color=BUTTON_BG, hover_color=BUTTON_HOVER, text_color=TEXT, corner_radius=8, border_width=1, border_color=BUTTON_BORDER).pack(side="left", padx=8, pady=8)
+ctk.CTkButton(actions, text="Save", command=save_config, fg_color=BUTTON_BG, hover_color=BUTTON_HOVER, text_color=TEXT, corner_radius=8, border_width=1, border_color=BUTTON_BORDER).pack(side="left", padx=8, pady=8)
+ctk.CTkButton(actions, text="Startup", command=add_to_startup, fg_color=BUTTON_BG, hover_color=BUTTON_HOVER, text_color=TEXT, corner_radius=8, border_width=1, border_color=BUTTON_BORDER).pack(side="left", padx=8, pady=8)
 
-ctk.CTkLabel(left, text="Responsiveness", text_color=TEXT).pack(anchor="w", padx=12, pady=(10,0))
-ctk.CTkSlider(left, from_=0, to=100, variable=responsiveness_var, progress_color=ACCENT, button_color=ACCENT).pack(fill="x", padx=12, pady=(4,10))
-ctk.CTkCheckBox(left, text="Smart Packets", variable=smart_packets_var, hover_color=ACCENT, text_color=TEXT, fg_color="#222222").pack(anchor="w", padx=12, pady=4)
-ctk.CTkCheckBox(left, text="Low Latency Mode", variable=low_latency_var, hover_color=ACCENT, text_color=TEXT, fg_color="#222222").pack(anchor="w", padx=12, pady=4)
-ctk.CTkLabel(left, text="Region DNS", text_color=TEXT).pack(anchor="w", padx=12, pady=(10,0))
-ctk.CTkOptionMenu(left, values=["US","EU","ASIA"], variable=region_var, fg_color="#222222", text_color="white", button_color=ACCENT).pack(fill="x", padx=12, pady=(4,10))
+ctk.CTkLabel(right, text="System", font=("Segoe UI", 15, "bold"), text_color=TEXT).pack(anchor="w", padx=12, pady=(12,6))
+sys_card = ctk.CTkFrame(right, fg_color=SUBPANEL, corner_radius=10)
+sys_card.pack(fill="x", padx=12, pady=6)
+ctk.CTkLabel(sys_card, text="CPU", text_color=MUTED).grid(row=0, column=0, sticky="w", padx=12, pady=10)
+ctk.CTkLabel(sys_card, textvariable=cpu_usage_var, text_color=ACCENT_A).grid(row=0, column=1, sticky="e", padx=12, pady=10)
+ctk.CTkLabel(sys_card, text="RAM", text_color=MUTED).grid(row=1, column=0, sticky="w", padx=12, pady=(0,12))
+ctk.CTkLabel(sys_card, textvariable=ram_usage_var, text_color=ACCENT_A).grid(row=1, column=1, sticky="e", padx=12, pady=(0,12))
 
-actions = ctk.CTkFrame(left, fg_color=HEADER_BG, corner_radius=12)
-actions.pack(fill="x", padx=12, pady=(12,6))
-ctk.CTkButton(actions, text="Test Netsh", command=lambda: messagebox.showinfo("Netsh test", str(run_netsh("netsh interface tcp show global"))), fg_color="#333333", hover_color="#444444", text_color="white").pack(side="left", padx=6)
-ctk.CTkButton(actions, text="Save Settings", command=save_config, fg_color="#333333", hover_color="#444444", text_color="white").pack(side="left", padx=6)
-
-ctk.CTkLabel(right, text="System Info", font=("Segoe UI", 18, "bold"), text_color=TEXT).pack(anchor="w", padx=12, pady=(12,6))
-sys_frame = ctk.CTkFrame(right, fg_color=HEADER_BG, corner_radius=12)
-sys_frame.pack(fill="x", padx=12, pady=8)
-ctk.CTkLabel(sys_frame, text="CPU", text_color=TEXT).grid(row=0,column=0, sticky="w", padx=12, pady=6)
-ctk.CTkLabel(sys_frame, textvariable=cpu_usage_var, text_color=ACCENT).grid(row=0,column=1, sticky="e", padx=12, pady=6)
-ctk.CTkLabel(sys_frame, text="RAM", text_color=TEXT).grid(row=1,column=0, sticky="w", padx=12, pady=6)
-ctk.CTkLabel(sys_frame, textvariable=ram_usage_var, text_color=ACCENT).grid(row=1,column=1, sticky="e", padx=12, pady=6)
-
-cpu_bar = ctk.CTkProgressBar(right, width=200, progress_color=ACCENT)
+cpu_bar = ctk.CTkProgressBar(right, width=240, progress_color=ACCENT_A)
 cpu_bar.pack(fill="x", padx=18, pady=(8,8))
-ram_bar = ctk.CTkProgressBar(right, width=200, progress_color=ACCENT)
-ram_bar.pack(fill="x", padx=18, pady=(0,10))
+ram_bar = ctk.CTkProgressBar(right, width=240, progress_color=ACCENT_B)
+ram_bar.pack(fill="x", padx=18, pady=(0,12))
 
-ctk.CTkLabel(right, text="Java Priority", text_color=TEXT).pack(anchor="w", padx=12, pady=(10,0))
-ctk.CTkOptionMenu(right, values=list(PRIORITY_CLASSES.keys()), variable=priority_var, fg_color="#222222", text_color="white", button_color=ACCENT).pack(fill="x", padx=12, pady=6)
-ctk.CTkLabel(right, text="Tuning Level", text_color=TEXT).pack(anchor="w", padx=12, pady=(10,0))
-ctk.CTkOptionMenu(right, values=["Restricted","Balanced","Aggressive"], variable=tuning_var, fg_color="#222222", text_color="white", button_color=ACCENT).pack(fill="x", padx=12, pady=6)
-ctk.CTkButton(right, text="Add to Startup", command=add_to_startup, fg_color="#333333", hover_color="#444444", text_color="white").pack(padx=12, pady=(12,8))
+ctk.CTkLabel(right, text="Java Priority", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
+ctk.CTkOptionMenu(right, values=list(PRIORITY_CLASSES.keys()), variable=priority_var, fg_color=BUTTON_BG, text_color=TEXT, button_color=BUTTON_BG).pack(fill="x", padx=12, pady=8)
+ctk.CTkLabel(right, text="Tuning", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
+ctk.CTkOptionMenu(right, values=["Restricted","Balanced","Aggressive"], variable=tuning_var, fg_color=BUTTON_BG, text_color=TEXT, button_color=BUTTON_BG).pack(fill="x", padx=12, pady=8)
 
-footer = ctk.CTkFrame(main_frame, fg_color=HEADER_BG, corner_radius=12)
-footer.pack(fill="x", padx=12, pady=(8,12))
-ctk.CTkLabel(footer, textvariable=status_var, anchor="w", text_color="#AAAAAA").pack(side="left", padx=8)
-ctk.CTkLabel(footer, text="v2.3", anchor="e", text_color="#777777").pack(side="right", padx=8)
+ctk.CTkLabel(left, text="Responsiveness", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
+ctk.CTkSlider(left, from_=0, to=100, variable=responsiveness_var, progress_color=ACCENT_A, button_color=ACCENT_B).pack(fill="x", padx=12, pady=(4,10))
+
+footer = ctk.CTkFrame(main, fg_color=SUBPANEL, corner_radius=10)
+footer.pack(fill="x", padx=6, pady=(8,6))
+ctk.CTkLabel(footer, textvariable=status_var, anchor="w", text_color=MUTED).pack(side="left", padx=12)
+ctk.CTkLabel(footer, text="v2.3", anchor="e", text_color=MUTED).pack(side="right", padx=12)
 
 load_config()
 init_net_counters()
