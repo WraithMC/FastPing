@@ -13,16 +13,19 @@ import math
 
 CONFIG_FILE = Path("config.json")
 LOGO_PATH = Path("logo.png")
+if not LOGO_PATH.exists():
+    LOGO_PATH = Path("logo.ico")
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-APP_SIZE = "860x560"
-ACCENT = "#4A90E2"
-ACCENT_HOVER = "#357ABD"
+APP_SIZE = "900x600"
+ACCENT = "#7B3FF2"
+ACCENT_HOVER = "#6934D6"
 TEXT = "#FFFFFF"
-CARD_BG = "#1E1E1E"
-BG = "#121212"
+CARD_BG = "#252525"
+BG = "#1E1E1E"
+HEADER_BG = "#2A2A2A"
 
 PRIORITY_CLASSES = {
     "Idle": psutil.IDLE_PRIORITY_CLASS,
@@ -45,6 +48,10 @@ app = ctk.CTk()
 app.geometry(APP_SIZE)
 app.title("FastPing — By WraithMC")
 app.configure(fg_color=BG)
+try:
+    app.iconbitmap(LOGO_PATH)
+except:
+    pass
 
 upload_speed_var = ctk.StringVar(value="0.00 MB/s")
 download_speed_var = ctk.StringVar(value="0.00 MB/s")
@@ -99,20 +106,26 @@ def update_network_speed_smooth():
         elapsed = max(now - _last_time, 0.0001)
         sent = (net.bytes_sent - _last_net.bytes_sent) / (1024*1024) / elapsed
         recv = (net.bytes_recv - _last_net.bytes_recv) / (1024*1024) / elapsed
-
         current_upload = float(upload_speed_var.get().split()[0])
         current_download = float(download_speed_var.get().split()[0])
-
-        upload_speed_var.set(f"{current_upload + (sent-current_upload)*0.25:.2f} MB/s")
-        download_speed_var.set(f"{current_download + (recv-current_download)*0.25:.2f} MB/s")
-
+        upload_speed_var.set(f"{current_upload + (sent-current_upload)*0.3:.2f} MB/s")
+        download_speed_var.set(f"{current_download + (recv-current_download)*0.3:.2f} MB/s")
         _last_net = net
         _last_time = now
     except:
         upload_speed_var.set("0.00 MB/s")
         download_speed_var.set("0.00 MB/s")
     finally:
-        app.after(500, update_network_speed_smooth)
+        app.after(400, update_network_speed_smooth)
+
+def smooth_progress(bar, target, speed=0.05):
+    current = bar.get()
+    if abs(current - target) < 0.005:
+        bar.set(target)
+        return
+    step = (target - current) * speed
+    bar.set(current + step)
+    app.after(16, lambda: smooth_progress(bar, target, speed))
 
 def update_resources_smooth():
     try:
@@ -126,16 +139,7 @@ def update_resources_smooth():
         cpu_usage_var.set("N/A")
         ram_usage_var.set("N/A")
     finally:
-        app.after(500, update_resources_smooth)
-
-def smooth_progress(bar, target, speed=0.02):
-    current = bar.get()
-    if abs(current - target) < 0.01:
-        bar.set(target)
-        return
-    step = (target-current)*speed
-    bar.set(current+step)
-    app.after(20, lambda: smooth_progress(bar, target, speed))
+        app.after(400, update_resources_smooth)
 
 def set_java_priority(name: str) -> int:
     if not is_windows(): return 0
@@ -199,86 +203,97 @@ def add_to_startup():
 def open_discord():
     webbrowser.open("https://discord.gg/T8GFc6ryGy")
 
-main_frame = ctk.CTkFrame(app, fg_color=BG, corner_radius=12)
+main_frame = ctk.CTkFrame(app, fg_color=BG, corner_radius=16)
 main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-header = ctk.CTkFrame(main_frame, fg_color=BG, corner_radius=8)
-header.pack(fill="x", padx=8, pady=(8,12))
+header = ctk.CTkFrame(main_frame, fg_color=HEADER_BG, corner_radius=12)
+header.pack(fill="x", padx=10, pady=(10, 15))
 
-left_h = ctk.CTkFrame(header, fg_color=BG, corner_radius=6)
-left_h.pack(side="left", padx=6, pady=6)
+left_h = ctk.CTkFrame(header, fg_color=HEADER_BG)
+left_h.pack(side="left", padx=10, pady=10)
 
 if LOGO_PATH.exists():
     try:
-        logo = ctk.CTkImage(LOGO_PATH, size=(48,48))
-        ctk.CTkLabel(left_h, image=logo, text="").pack(side="left", padx=(0,12))
-    except: pass
+        from PIL import Image
+        logo_img = ctk.CTkImage(light_image=Image.open(LOGO_PATH), dark_image=Image.open(LOGO_PATH), size=(40, 40))
+        ctk.CTkLabel(left_h, image=logo_img, text="").pack(side="left", padx=(0, 10))
+    except:
+        pass
 
-ctk.CTkLabel(left_h, text="FastPing", font=("Segoe UI", 24, "bold"), text_color=ACCENT).pack(side="left")
-ctk.CTkLabel(left_h, text="— Network & Java Tuning", font=("Segoe UI", 11), text_color=TEXT).pack(side="left", padx=(6,0))
+ctk.CTkLabel(left_h, text="FastPing", font=("Segoe UI", 26, "bold"), text_color=ACCENT).pack(side="left")
 
-right_h = ctk.CTkFrame(header, fg_color=BG, corner_radius=6)
-right_h.pack(side="right", padx=6, pady=6)
+right_h = ctk.CTkFrame(header, fg_color=HEADER_BG)
+right_h.pack(side="right", padx=10, pady=10)
+
 ctk.CTkButton(right_h, text="Join Discord", command=open_discord,
-              fg_color="#5865F2", hover_color="#4752C4", corner_radius=12).pack(side="right", padx=8)
+              fg_color="#5865F2", hover_color="#4752C4",
+              text_color="white", corner_radius=10, width=120).pack(side="right", padx=8)
 ctk.CTkButton(right_h, text="Apply Settings", command=apply_settings,
-              fg_color=ACCENT, hover_color=ACCENT_HOVER, corner_radius=12).pack(side="right", padx=8)
+              fg_color=ACCENT, hover_color=ACCENT_HOVER,
+              text_color="white", corner_radius=10, width=140).pack(side="right", padx=8)
 
 content = ctk.CTkFrame(main_frame, fg_color=BG, corner_radius=12)
 content.pack(fill="both", expand=True, padx=6, pady=6)
 
-left = ctk.CTkFrame(content, fg_color=CARD_BG, corner_radius=12)
-left.pack(side="left", fill="both", expand=True, padx=(6,3), pady=6)
-right = ctk.CTkFrame(content, fg_color=CARD_BG, corner_radius=12)
-right.pack(side="right", fill="both", expand=True, padx=(3,6), pady=6)
+left = ctk.CTkFrame(content, fg_color=CARD_BG, corner_radius=14)
+left.pack(side="left", fill="both", expand=True, padx=(6, 3), pady=6)
+right = ctk.CTkFrame(content, fg_color=CARD_BG, corner_radius=14)
+right.pack(side="right", fill="both", expand=True, padx=(3, 6), pady=6)
 
-ctk.CTkLabel(left, text="Network Status", font=("Segoe UI", 16, "bold"), text_color=TEXT).pack(anchor="w", padx=12, pady=(6,6))
+ctk.CTkLabel(left, text="Network Status", font=("Segoe UI", 17, "bold"), text_color=TEXT).pack(anchor="w", padx=12, pady=(10, 6))
 
-net_frame = ctk.CTkFrame(left, fg_color=BG, corner_radius=10)
-net_frame.pack(fill="x", padx=12, pady=6)
+net_frame = ctk.CTkFrame(left, fg_color=HEADER_BG, corner_radius=10)
+net_frame.pack(fill="x", padx=12, pady=8)
 ctk.CTkLabel(net_frame, text="Download", text_color=TEXT).grid(row=0, column=0, sticky="w", padx=12, pady=6)
 ctk.CTkLabel(net_frame, textvariable=download_speed_var, text_color=ACCENT).grid(row=0, column=1, sticky="e", padx=12, pady=6)
 ctk.CTkLabel(net_frame, text="Upload", text_color=TEXT).grid(row=1, column=0, sticky="w", padx=12, pady=6)
 ctk.CTkLabel(net_frame, textvariable=upload_speed_var, text_color=ACCENT).grid(row=1, column=1, sticky="e", padx=12, pady=6)
 
-ctk.CTkLabel(left, text="Responsiveness", text_color=TEXT).pack(anchor="w", padx=12, pady=(8,0))
+ctk.CTkLabel(left, text="Responsiveness", text_color=TEXT).pack(anchor="w", padx=12, pady=(10, 0))
 ctk.CTkSlider(left, from_=0, to=100, variable=responsiveness_var,
-              progress_color=ACCENT, button_color=ACCENT).pack(fill="x", padx=12, pady=(2,8))
+              progress_color=ACCENT, button_color=ACCENT).pack(fill="x", padx=12, pady=(4, 10))
 
-ctk.CTkCheckBox(left, text="Smart Packets", variable=smart_packets_var, hover_color=ACCENT).pack(anchor="w", padx=12, pady=6)
-ctk.CTkCheckBox(left, text="Low Latency Mode", variable=low_latency_var, hover_color=ACCENT).pack(anchor="w", padx=12, pady=6)
+ctk.CTkCheckBox(left, text="Smart Packets", variable=smart_packets_var, hover_color=ACCENT,
+                text_color=TEXT, fg_color="#333333").pack(anchor="w", padx=12, pady=4)
+ctk.CTkCheckBox(left, text="Low Latency Mode", variable=low_latency_var, hover_color=ACCENT,
+                text_color=TEXT, fg_color="#333333").pack(anchor="w", padx=12, pady=4)
 
-actions = ctk.CTkFrame(left, fg_color=BG, corner_radius=8)
-actions.pack(fill="x", padx=12, pady=(10,6))
-ctk.CTkButton(actions, text="Test Netsh", command=lambda: messagebox.showinfo("Netsh test", str(run_netsh("netsh interface tcp show global")))).pack(side="left", padx=6)
-ctk.CTkButton(actions, text="Save Settings", command=save_config, fg_color="#333333", hover_color="#444444").pack(side="left", padx=6)
+actions = ctk.CTkFrame(left, fg_color=HEADER_BG, corner_radius=8)
+actions.pack(fill="x", padx=12, pady=(12, 6))
+ctk.CTkButton(actions, text="Test Netsh", command=lambda: messagebox.showinfo("Netsh test", str(run_netsh("netsh interface tcp show global"))),
+              fg_color="#3B3B3B", hover_color="#444444", text_color="white").pack(side="left", padx=6)
+ctk.CTkButton(actions, text="Save Settings", command=save_config, fg_color="#3B3B3B",
+              hover_color="#444444", text_color="white").pack(side="left", padx=6)
 
-ctk.CTkLabel(right, text="System Info", font=("Segoe UI", 16, "bold"), text_color=TEXT).pack(anchor="w", padx=12, pady=(6,6))
+ctk.CTkLabel(right, text="System Info", font=("Segoe UI", 17, "bold"), text_color=TEXT).pack(anchor="w", padx=12, pady=(10, 6))
 
-sys_frame = ctk.CTkFrame(right, fg_color=BG, corner_radius=10)
-sys_frame.pack(fill="x", padx=12, pady=6)
+sys_frame = ctk.CTkFrame(right, fg_color=HEADER_BG, corner_radius=10)
+sys_frame.pack(fill="x", padx=12, pady=8)
 ctk.CTkLabel(sys_frame, text="CPU", text_color=TEXT).grid(row=0,column=0, sticky="w", padx=12, pady=6)
 ctk.CTkLabel(sys_frame, textvariable=cpu_usage_var, text_color=ACCENT).grid(row=0,column=1, sticky="e", padx=12, pady=6)
 ctk.CTkLabel(sys_frame, text="RAM", text_color=TEXT).grid(row=1,column=0, sticky="w", padx=12, pady=6)
 ctk.CTkLabel(sys_frame, textvariable=ram_usage_var, text_color=ACCENT).grid(row=1,column=1, sticky="e", padx=12, pady=6)
 
-cpu_bar = ctk.CTkProgressBar(right, width=200)
-cpu_bar.pack(fill="x", padx=18, pady=(6,8))
-ram_bar = ctk.CTkProgressBar(right, width=200)
-ram_bar.pack(fill="x", padx=18, pady=(0,8))
+cpu_bar = ctk.CTkProgressBar(right, width=200, progress_color=ACCENT)
+cpu_bar.pack(fill="x", padx=18, pady=(8,8))
+ram_bar = ctk.CTkProgressBar(right, width=200, progress_color=ACCENT)
+ram_bar.pack(fill="x", padx=18, pady=(0,10))
 
-ctk.CTkLabel(right, text="Java Priority", text_color=TEXT).pack(anchor="w", padx=12, pady=(8,0))
-ctk.CTkOptionMenu(right, values=list(PRIORITY_CLASSES.keys()), variable=priority_var).pack(fill="x", padx=12, pady=6)
+ctk.CTkLabel(right, text="Java Priority", text_color=TEXT).pack(anchor="w", padx=12, pady=(10, 0))
+ctk.CTkOptionMenu(right, values=list(PRIORITY_CLASSES.keys()), variable=priority_var,
+                  fg_color="#333333", text_color="white", button_color=ACCENT).pack(fill="x", padx=12, pady=6)
 
-ctk.CTkLabel(right, text="Tuning Level", text_color=TEXT).pack(anchor="w", padx=12, pady=(8,0))
-ctk.CTkOptionMenu(right, values=["Restricted","Balanced","Aggressive"], variable=tuning_var).pack(fill="x", padx=12, pady=6)
+ctk.CTkLabel(right, text="Tuning Level", text_color=TEXT).pack(anchor="w", padx=12, pady=(10, 0))
+ctk.CTkOptionMenu(right, values=["Restricted","Balanced","Aggressive"], variable=tuning_var,
+                  fg_color="#333333", text_color="white", button_color=ACCENT).pack(fill="x", padx=12, pady=6)
 
-ctk.CTkButton(right, text="Add to Startup", command=add_to_startup, fg_color="#333333", hover_color="#444444").pack(padx=12, pady=(10,6))
+ctk.CTkButton(right, text="Add to Startup", command=add_to_startup,
+              fg_color="#3B3B3B", hover_color="#444444", text_color="white").pack(padx=12, pady=(12, 8))
 
-footer = ctk.CTkFrame(main_frame, fg_color=BG, corner_radius=6)
-footer.pack(fill="x", padx=12, pady=(6,12))
-ctk.CTkLabel(footer, textvariable=status_var, anchor="w").pack(side="left", padx=8)
-ctk.CTkLabel(footer, text="v2.0", anchor="e", text_color=TEXT).pack(side="right", padx=8)
+footer = ctk.CTkFrame(main_frame, fg_color=HEADER_BG, corner_radius=8)
+footer.pack(fill="x", padx=12, pady=(8, 12))
+ctk.CTkLabel(footer, textvariable=status_var, anchor="w", text_color="#AAAAAA").pack(side="left", padx=8)
+ctk.CTkLabel(footer, text="v2.1", anchor="e", text_color="#777777").pack(side="right", padx=8)
 
 load_config()
 init_net_counters()
