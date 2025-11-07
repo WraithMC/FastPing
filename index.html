@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EzPing -Best Free Ping Optimizer</title>
+  <title>FastPing - Best Free Ping Optimizer</title>
   <link rel="icon" href="assets/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -204,7 +204,7 @@
       animation: fadeIn 0.8s ease forwards;
     }
     .modal img {
-      max-width: 90%; /* fit nicely in modal */
+      max-width: 90%;
       max-height: 90%;
       border-radius: 16px;
       transition: transform 0.3s ease;
@@ -218,7 +218,7 @@
 
   <nav>
     <div class="logo">
-      <img src="assets/logo.png" alt="EzPing Logo">
+      <img src="assets/logo.png" alt="FastPing Logo">
     </div>
     <ul>
       <li><a href="#features">Features</a></li>
@@ -230,23 +230,23 @@
 
   <section class="hero">
     <div class="hero-content">
-      <h1>EzPing — Ultimate Network Optimizer</h1>
-      <p>EzPing is safe, lightweight, and open-source. It reduces latency, smooths game performance, and boosts connection stability — 100% free, no cheats, no risk.</p>
+      <h1>FastPing — Ultimate Network Optimizer</h1>
+      <p>FastPing is safe, lightweight, and open-source. It reduces latency, smooths game performance, and boosts connection stability — 100% free, no cheats, no risk.</p>
       <div class="buttons">
-        <a href="assets/dist/FastPing.exe" class="btn primary" download>Download EzPing</a>
+        <a href="assets/dist/FastPing.exe" class="btn primary" download>Download FastPing</a>
         <a href="https://github.com/WraithMC/FastPing" class="btn secondary" target="_blank">View Source</a>
       </div>
     </div>
-    <a href="#uiModal"><img src="assets/screenshots/UI.png" alt="EzPing Showcase"></a>
+    <a href="#uiModal"><img src="assets/screenshots/UI.png" alt="FastPing Showcase"></a>
   </section>
 
   <div id="uiModal" class="modal">
     <a href="#!" style="position:absolute;top:20px;right:30px;font-size:48px;color:#fff;text-decoration:none;">&times;</a>
-    <img src="assets/screenshots/UI.png" alt="EzPing Showcase Modal">
+    <img src="assets/screenshots/UI.png" alt="FastPing Showcase Modal">
   </div>
 
   <section id="features" class="features">
-    <h2>Why Choose EzPing?</h2>
+    <h2>Why Choose FastPing?</h2>
     <div class="feature-grid">
       <div class="feature">
         <h3>Low Latency</h3>
@@ -270,8 +270,8 @@
   <section id="faq" class="faq">
     <h2>Frequently Asked Questions</h2>
     <details>
-      <summary>Is EzPing safe to use?</summary>
-      <p>Yes, EzPing is completely safe. It only tweaks Windows networking settings — no cheats, no exploits.</p>
+      <summary>Is FastPing safe to use?</summary>
+      <p>Yes, FastPing is completely safe. It only tweaks Windows networking settings — no cheats, no exploits.</p>
     </details>
     <details>
       <summary>Does it really improve ping?</summary>
@@ -283,235 +283,140 @@
     </details>
     <details>
       <summary>Is it free?</summary>
-      <p>Absolutely. EzPing is 100% free and always will be.</p>
+      <p>Absolutely. FastPing is 100% free and always will be.</p>
     </details>
   </section>
 
   <footer>
-    <p>© 2025 EzPing | <a href="https://github.com/WraithMC/FastPing">GitHub</a> | <a href="https://discord.gg/T8GFc6ryGy">Discord</a></p>
+    <p>© 2025 FastPing | <a href="https://github.com/WraithMC/FastPing">GitHub</a> | <a href="https://discord.gg/T8GFc6ryGy">Discord</a></p>
   </footer>
 
-</body>
-</html>
-<button id="scrollTopBtn" style="
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  padding: 12px 16px;
-  border-radius: 50%;
-  background: #7B3FF2;
-  border: none;
-  color: white;
-  font-size: 1.4rem;
-  cursor: pointer;
-  box-shadow: 0 0 15px rgba(123,63,242,0.6);
-  transition: all 0.3s ease;
-  display: none;
-  z-index: 1500;">↑</button>
+  <button id="scrollTopBtn" style="
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 12px 16px;
+    border-radius: 50%;
+    background: #7B3FF2;
+    border: none;
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(123,63,242,0.6);
+    transition: all 0.3s ease;
+    display: none;
+    z-index: 1500;">↑</button>
 
-<canvas id="particles" style="
-  position: fixed;
-  top:0;
-  left:0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-"></canvas>
+  <canvas id="particles" style="
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  "></canvas>
 
-<script>
-const scrollBtn = document.getElementById('scrollTopBtn');
-window.addEventListener('scroll', () => {
-  scrollBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
-});
-scrollBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-let particles = [];
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
-
-class Particle {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 2 + 1;
-    this.speedX = Math.random() * 0.5 - 0.25;
-    this.speedY = Math.random() * 0.5 - 0.25;
-    this.color = `rgba(123,63,242,${Math.random()*0.7+0.3})`;
-  }
-  update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    if(this.x > canvas.width) this.x = 0;
-    if(this.x < 0) this.x = canvas.width;
-    if(this.y > canvas.height) this.y = 0;
-    if(this.y < 0) this.y = canvas.height;
-  }
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-    ctx.fill();
-  }
-}
-
-function initParticles() {
-  particles = [];
-  for(let i = 0; i < 100; i++) {
-    particles.push(new Particle());
-  }
-}
-
-function animateParticles() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p => { p.update(); p.draw(); });
-  requestAnimationFrame(animateParticles);
-}
-
-initParticles();
-animateParticles();
-
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const target = document.querySelector(a.getAttribute('href'));
-    if(target) target.scrollIntoView({ behavior: 'smooth' });
+  <script>
+  const scrollBtn = document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll', () => {
+    scrollBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
   });
-});
-</script>
-<button id="scrollTopBtn" style="
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  padding: 12px 16px;
-  border-radius: 50%;
-  background: #7B3FF2;
-  border: none;
-  color: white;
-  font-size: 1.4rem;
-  cursor: pointer;
-  box-shadow: 0 0 15px rgba(123,63,242,0.6);
-  transition: all 0.3s ease;
-  display: none;
-  z-index: 1500;">↑</button>
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 
-<canvas id="particles" style="
-  position: fixed;
-  top:0;
-  left:0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-"></canvas>
-
-<script>
-const scrollBtn = document.getElementById('scrollTopBtn');
-window.addEventListener('scroll', () => {
-  scrollBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
-});
-scrollBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-let particles = [];
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-window.addEventListener('resize', () => {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-});
 
-class Particle {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 2 + 1;
-    this.speedX = Math.random() * 0.5 - 0.25;
-    this.speedY = Math.random() * 0.5 - 0.25;
-    this.color = `rgba(123,63,242,${Math.random()*0.7+0.3})`;
-  }
-  update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    if(this.x > canvas.width) this.x = 0;
-    if(this.x < 0) this.x = canvas.width;
-    if(this.y > canvas.height) this.y = 0;
-    if(this.y < 0) this.y = canvas.height;
-  }
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-    ctx.fill();
-  }
-}
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
 
-function initParticles() {
-  particles = [];
-  for(let i = 0; i < 120; i++) {
-    particles.push(new Particle());
+  class Particle {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 1;
+      this.speedX = Math.random() * 0.5 - 0.25;
+      this.speedY = Math.random() * 0.5 - 0.25;
+      this.color = `rgba(123,63,242,${Math.random()*0.7+0.3})`;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if(this.x > canvas.width) this.x = 0;
+      if(this.x < 0) this.x = canvas.width;
+      if(this.y > canvas.height) this.y = 0;
+      if(this.y < 0) this.y = canvas.height;
+    }
+    draw() {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+      ctx.fill();
+    }
   }
-}
 
-function animateParticles() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p => { p.update(); p.draw(); });
-  connectParticles();
-  requestAnimationFrame(animateParticles);
-}
+  function initParticles() {
+    particles = [];
+    for(let i = 0; i < 120; i++) {
+      particles.push(new Particle());
+    }
+  }
 
-function connectParticles() {
-  for(let a = 0; a < particles.length; a++) {
-    for(let b = a; b < particles.length; b++) {
-      let dx = particles[a].x - particles[b].x;
-      let dy = particles[a].y - particles[b].y;
-      let distance = Math.sqrt(dx*dx + dy*dy);
-      if(distance < 100) {
-        ctx.strokeStyle = `rgba(123,63,242,${1 - distance/100})`;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(particles[a].x, particles[a].y);
-        ctx.lineTo(particles[b].x, particles[b].y);
-        ctx.stroke();
+  function animateParticles() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    connectParticles();
+    requestAnimationFrame(animateParticles);
+  }
+
+  function connectParticles() {
+    for(let a = 0; a < particles.length; a++) {
+      for(let b = a; b < particles.length; b++) {
+        let dx = particles[a].x - particles[b].x;
+        let dy = particles[a].y - particles[b].y;
+        let distance = Math.sqrt(dx*dx + dy*dy);
+        if(distance < 100) {
+          ctx.strokeStyle = `rgba(123,63,242,${1 - distance/100})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(particles[a].x, particles[a].y);
+          ctx.lineTo(particles[b].x, particles[b].y);
+          ctx.stroke();
+        }
       }
     }
   }
-}
 
-initParticles();
-animateParticles();
+  initParticles();
+  animateParticles();
 
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const target = document.querySelector(a.getAttribute('href'));
-    if(target) target.scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if(target) target.scrollIntoView({ behavior: 'smooth' });
+    });
   });
-});
 
-const buttons = document.querySelectorAll('.btn');
-buttons.forEach(btn => {
-  btn.addEventListener('mouseenter', () => {
-    btn.style.transform = 'scale(1.08)';
-    btn.style.filter = 'brightness(1.2) drop-shadow(0 0 15px #7B3FF2)';
+  const buttons = document.querySelectorAll('.btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('mouseenter', () => {
+      btn.style.transform = 'scale(1.08)';
+      btn.style.filter = 'brightness(1.2) drop-shadow(0 0 15px #7B3FF2)';
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = 'scale(1)';
+      btn.style.filter = 'none';
+    });
   });
-  btn.addEventListener('mouseleave', () => {
-    btn.style.transform = 'scale(1)';
-    btn.style.filter = 'none';
-  });
-});
-</script>
+  </script>
 
+</body>
+</html>
