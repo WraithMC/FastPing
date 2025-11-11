@@ -83,10 +83,41 @@
     .feature:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06);transform:translateY(-6px) scale(1.02)}
     .feature h3{color:#fff;font-size:1.3rem;margin-bottom:12px}
     .feature p{color:#a9a9a9;font-size:.95rem;line-height:1.7}
+    .how-it-works{
+      text-align:center;padding:160px 10%;background:#0a0a0a;
+    }
+    .how-it-works h2{font-size:2.6rem;font-weight:700;margin-bottom:60px;letter-spacing:-0.5px}
+    .how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px}
+    .how-item{
+      background:rgba(255,255,255,0.03);
+      padding:40px;border-radius:28px;
+      border:1px solid rgba(255,255,255,0.05);
+      transition:all .4s ease;
+    }
+    .how-item:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06);transform:translateY(-6px) scale(1.02)}
+    .how-item h3{color:#fff;font-size:1.3rem;margin-bottom:12px}
+    .how-item p{color:#a9a9a9;font-size:.95rem;line-height:1.7}
+    .faq{
+      text-align:center;padding:160px 10%;background:#050505;
+    }
+    .faq h2{font-size:2.6rem;font-weight:700;margin-bottom:60px;letter-spacing:-0.5px}
+    .faq-item{
+      background:rgba(255,255,255,0.03);
+      padding:30px 40px;
+      margin-bottom:20px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,0.05);
+      text-align:left;
+      transition:all .3s ease;
+      cursor:pointer;
+    }
+    .faq-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.2)}
+    .faq-item h3{color:#fff;font-size:1.2rem;margin-bottom:8px}
+    .faq-item p{color:#aaa;font-size:1rem;line-height:1.6;display:none}
     footer{text-align:center;padding:60px 10%;border-top:1px solid rgba(255,255,255,0.05);background:#000;color:#777;font-size:.9rem}
     footer a{color:#fff;text-decoration:none}
     footer a:hover{text-decoration:underline}
-    @media(max-width:950px){.version-container{flex-direction:column;align-items:center}.version{max-width:90%}}
+    @media(max-width:950px){.version-container,.how-grid{flex-direction:column;align-items:center}.version,.how-item{max-width:90%}}
   </style>
 </head>
 <body>
@@ -95,6 +126,8 @@
     <ul>
       <li><a href="#versions">Versions</a></li>
       <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#faq">FAQ</a></li>
       <li><a href="https://github.com/WraithMC/FastPing" target="_blank">GitHub</a></li>
       <li><a href="https://discord.gg/T8GFc6ryGy" target="_blank">Discord</a></li>
     </ul>
@@ -133,10 +166,48 @@
     </div>
   </section>
 
+  <section id="how-it-works" class="how-it-works">
+    <h2>How FastPing Works in PvP</h2>
+    <div class="how-grid">
+      <div class="how-item"><h3>Rodding / Knockback Control</h3><p>Optimizes packet timing so that rod and knockback interactions are more reliable, allowing consistent PvP combos.</p></div>
+      <div class="how-item"><h3>Potting Speed</h3><p>Reduces latency and ensures smoother potion usage, making it easier to heal quickly without delays in combat.</p></div>
+      <div class="how-item"><h3>Hit Registration</h3><p>Enhances hit detection by optimizing packet flow, so every sword swing or bow shot registers accurately during intense fights.</p></div>
+      <div class="how-item"><h3>Network Stability</h3><p>Minimizes packet loss and jitter, keeping your connection stable for lag-free PvP interactions.</p></div>
+    </div>
+  </section>
+
+  <section id="faq" class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <h3>Is FastPing safe to use?</h3>
+      <p>Yes, all optimizations are network-level adjustments. No hacks, cheats, or injections are used. It is 100% safe for Minecraft.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Will this improve my ping?</h3>
+      <p>FastPing optimizes packet routing and reduces latency for more stable gameplay. Exact results depend on your connection and server location.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Does it work with all Minecraft versions?</h3>
+      <p>Yes, FastPing supports all versions. Auto-update keeps your configuration compatible with new updates.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Do I need to configure anything?</h3>
+      <p>FastPing Lite requires no setup. The full version allows custom profiles for advanced optimization.</p>
+    </div>
+  </section>
+
   <footer>
     <p>© 2025 FastPing | <a href="https://github.com/WraithMC/FastPing">GitHub</a> | <a href="https://discord.gg/T8GFc6ryGy">Discord</a></p>
   </footer>
+
+  <script>
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const p = item.querySelector('p');
+        p.style.display = p.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+  </script>
 </body>
 </html>
-
-
