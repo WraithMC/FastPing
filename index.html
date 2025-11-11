@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FastPing -Optimize you're conection in Minecraft</title>
+  <title>FastPing - Optimize your connection in Minecraft</title>
   <link rel="icon" href="assets/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -16,300 +16,123 @@
       scroll-behavior:smooth;
     }
     nav{
-      position:fixed;
-      top:0;left:0;width:100%;
+      position:fixed;top:0;left:0;width:100%;
       backdrop-filter:blur(20px);
       background:rgba(0,0,0,0.65);
       border-bottom:1px solid rgba(255,255,255,0.05);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:18px 6%;
-      z-index:1000;
-      transition:all .3s ease;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:18px 6%;z-index:1000;transition:all .3s ease;
     }
-    nav img{
-      height:46px;
-      filter:brightness(1.2);
-      transition:transform .3s ease;
-      cursor:pointer;
-    }
+    nav img{height:46px;filter:brightness(1.2);transition:transform .3s ease;cursor:pointer}
     nav img:hover{transform:scale(1.06)}
-    nav ul{
-      list-style:none;
-      display:flex;
-      gap:32px;
-    }
-    nav a{
-      text-decoration:none;
-      color:#e0e0e0;
-      font-weight:500;
-      font-size:15px;
-      transition:.3s;
-    }
-    nav a:hover{
-      color:#fff;
-    }
+    nav ul{list-style:none;display:flex;gap:32px}
+    nav a{text-decoration:none;color:#e0e0e0;font-weight:500;font-size:15px;transition:.3s}
+    nav a:hover{color:#fff}
     .hero{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:160px 8% 100px;
-      gap:100px;
-      flex-direction:row;
-      opacity:0;
-      transform:translateY(30px);
+      min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      text-align:center;padding:160px 6% 100px;
+      opacity:0;transform:translateY(30px);
       animation:fadeIn .9s ease forwards;
     }
     @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
-    .hero img{
-      max-width:90%;
-      border-radius:32px;
-      background:linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02));
+    .hero h1{font-size:3rem;font-weight:700;margin-bottom:12px;line-height:1.1}
+    .hero p{color:#bdbdbd;font-size:1.1rem;margin-bottom:40px;line-height:1.7}
+    .version-container{
+      display:flex;flex-wrap:wrap;justify-content:center;gap:60px;
+      width:100%;max-width:1200px;
+    }
+    .version{
+      background:rgba(255,255,255,0.03);
       border:1px solid rgba(255,255,255,0.08);
-      padding:20px;
-      transition:transform .4s ease,filter .4s ease;
-      filter:drop-shadow(0 0 25px rgba(255,255,255,0.08));
-      cursor:pointer;
-    }
-    .hero img:hover{
-      transform:scale(1.03);
-      filter:drop-shadow(0 0 40px rgba(255,255,255,0.15));
-    }
-    .hero-content{
-      flex:1;
-      max-width:600px;
-      opacity:0;
-      animation:slideIn 1.1s ease forwards;
-    }
-    @keyframes slideIn{to{opacity:1;transform:translateX(0)}}
-    .hero-content h1{
-      font-size:3.2rem;
-      font-weight:700;
-      color:#fff;
-      margin-bottom:16px;
-      line-height:1.1;
-      letter-spacing:-1px;
-      opacity:0;
-      animation:fadeText 1.3s ease forwards;
-    }
-    .hero-content p{
-      color:#bdbdbd;
-      font-size:1.1rem;
-      margin-bottom:40px;
-      line-height:1.7;
-      opacity:0;
-      animation:fadeText 1.6s ease forwards;
-    }
-    @keyframes fadeText{to{opacity:1}}
-    .buttons{
-      display:flex;
-      gap:18px;
-      flex-wrap:wrap;
-    }
-    .btn{
-      padding:14px 34px;
-      border-radius:50px;
-      font-weight:600;
-      font-size:1rem;
-      text-decoration:none;
-      transition:all .3s ease;
-      border:none;
-      backdrop-filter:blur(20px);
-    }
-    .btn.primary{
-      background:rgba(255,255,255,0.08);
-      color:#fff;
-    }
-    .btn.primary:hover{
-      background:rgba(255,255,255,0.16);
-      transform:translateY(-3px) scale(1.05);
-    }
-    .btn.secondary{
-      background:rgba(255,255,255,0.04);
-      color:#bdbdbd;
-      border:1px solid rgba(255,255,255,0.05);
-    }
-    .btn.secondary:hover{
-      color:#fff;
-      background:rgba(255,255,255,0.1);
-      transform:translateY(-3px) scale(1.05);
-    }
-    .features{
-      text-align:center;
-      padding:160px 10%;
-      background:#050505;
-      animation:fadeIn .8s ease forwards;
-    }
-    .features h2{
-      font-size:2.6rem;
-      font-weight:700;
-      margin-bottom:60px;
-      color:#fff;
-      letter-spacing:-0.5px;
-      opacity:0;
-      animation:fadeText 1s ease forwards;
-    }
-    .feature-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:48px;
-    }
-    .feature{
-      background:rgba(255,255,255,0.03);
-      padding:40px;
       border-radius:28px;
-      border:1px solid rgba(255,255,255,0.05);
+      padding:40px;
+      max-width:500px;
+      text-align:center;
       transition:all .4s ease;
-      opacity:0;
-      animation:fadeText 1s ease forwards;
     }
-    .feature:hover{
-      border-color:rgba(255,255,255,0.2);
-      background:rgba(255,255,255,0.06);
-      transform:translateY(-6px) scale(1.02);
-    }
-    .feature h3{
-      color:#fff;
-      font-size:1.3rem;
-      margin-bottom:12px;
-    }
-    .feature p{
-      color:#a9a9a9;
-      font-size:0.95rem;
-      line-height:1.7;
-    }
-    .faq{
-      padding:120px 10%;
-      text-align:center;
-      background:#000;
-      animation:fadeIn .8s ease forwards;
-    }
-    .faq h2{
-      font-size:2.5rem;
-      margin-bottom:50px;
-      color:#fff;
-      opacity:0;
-      animation:fadeText 1s ease forwards;
-    }
-    details{
-      max-width:700px;
-      margin:0 auto 20px;
-      background:rgba(255,255,255,0.03);
-      border-radius:18px;
-      padding:20px 26px;
-      border:1px solid rgba(255,255,255,0.07);
-      text-align:left;
-      transition:all .35s ease;
-    }
-    details[open]{
-      border-color:rgba(255,255,255,0.15);
-      background:rgba(255,255,255,0.06);
-      transform:translateY(-2px);
-    }
-    summary{
-      font-size:1.1rem;
-      font-weight:600;
-      cursor:pointer;
-      color:#fff;
-      list-style:none;
-    }
-    details p{
-      color:#aaa;
-      margin-top:12px;
-      line-height:1.7;
-    }
-    footer{
-      text-align:center;
-      padding:60px 10%;
-      border-top:1px solid rgba(255,255,255,0.05);
-      background:#000;
-      color:#777;
-      font-size:.9rem;
-    }
-    footer a{
-      color:#fff;
-      text-decoration:none;
-    }
-    footer a:hover{
-      text-decoration:underline;
-    }
-    @media(max-width:950px){
-      .hero{flex-direction:column;text-align:center;gap:50px}
-      .hero img{max-width:95%}
-      .hero-content{max-width:95%}
-      .buttons{justify-content:center}
-    }
-    .modal{
-      display:none;
-      position:fixed;
-      z-index:2000;
-      left:0;top:0;
-      width:100%;height:100%;
-      overflow:auto;
-      background-color:rgba(0,0,0,0.95);
-      align-items:center;
-      justify-content:center;
-      animation:fadeIn .8s ease forwards;
-    }
-    .modal img{
-      max-width:90%;
-      max-height:90%;
-      border-radius:24px;
+    .version:hover{background:rgba(255,255,255,0.06);transform:translateY(-6px) scale(1.02);border-color:rgba(255,255,255,0.2)}
+    .version img{
+      width:100%;border-radius:22px;margin-bottom:20px;
+      border:1px solid rgba(255,255,255,0.05);
+      filter:drop-shadow(0 0 20px rgba(255,255,255,0.1));
       transition:transform .3s ease;
     }
-    .modal img:hover{transform:scale(1.03)}
-    .modal:target{display:flex}
+    .version img:hover{transform:scale(1.03)}
+    .version h2{font-size:1.8rem;margin-bottom:12px}
+    .version p{color:#aaa;font-size:1rem;margin-bottom:25px;line-height:1.6}
+    .btn{
+      padding:14px 34px;border-radius:50px;font-weight:600;font-size:1rem;
+      text-decoration:none;transition:all .3s ease;border:none;
+      backdrop-filter:blur(20px);display:inline-block;
+    }
+    .btn.primary{background:rgba(255,255,255,0.08);color:#fff}
+    .btn.primary:hover{background:rgba(255,255,255,0.16);transform:translateY(-3px) scale(1.05)}
+    .features{
+      text-align:center;padding:160px 10%;background:#050505;
+      animation:fadeIn .8s ease forwards;
+    }
+    .features h2{font-size:2.6rem;font-weight:700;margin-bottom:60px;letter-spacing:-0.5px}
+    .feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px}
+    .feature{
+      background:rgba(255,255,255,0.03);
+      padding:40px;border-radius:28px;
+      border:1px solid rgba(255,255,255,0.05);
+      transition:all .4s ease;
+    }
+    .feature:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06);transform:translateY(-6px) scale(1.02)}
+    .feature h3{color:#fff;font-size:1.3rem;margin-bottom:12px}
+    .feature p{color:#a9a9a9;font-size:.95rem;line-height:1.7}
+    footer{text-align:center;padding:60px 10%;border-top:1px solid rgba(255,255,255,0.05);background:#000;color:#777;font-size:.9rem}
+    footer a{color:#fff;text-decoration:none}
+    footer a:hover{text-decoration:underline}
+    @media(max-width:950px){.version-container{flex-direction:column;align-items:center}.version{max-width:90%}}
   </style>
 </head>
 <body>
   <nav>
-    <div class="logo">
-      <img src="assets/logo.png" alt="FastPing Logo">
-    </div>
+    <div class="logo"><img src="assets/logo.png" alt="FastPing Logo"></div>
     <ul>
+      <li><a href="#versions">Versions</a></li>
       <li><a href="#features">Features</a></li>
-      <li><a href="#faq">FAQ</a></li>
       <li><a href="https://github.com/WraithMC/FastPing" target="_blank">GitHub</a></li>
       <li><a href="https://discord.gg/T8GFc6ryGy" target="_blank">Discord</a></li>
     </ul>
   </nav>
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Like Cafeine in Minecraft</h1>
-      <h1>Gain Advantage In a Legit Way</h1>
-      <div class="buttons">
-        <a href="assets/dist/FastPing.exe" class="btn primary" download>Download Now!</a>
+
+  <section id="versions" class="hero">
+    <h1>Like Cafeine in Minecraft</h1>
+    <h1>Gain Advantage In a Legit Way</h1>
+    <div class="version-container">
+      <div class="version">
+        <img src="assets/screenshots/UI.png" alt="FastPing">
+        <h2>FastPing</h2>
+        <p>Full-featured version with enhanced packet optimization, custom configs, and improved performance for Minecraft players who want maximum stability and speed.</p>
+        <a href="assets/dist/FastPing.exe" class="btn primary" download>Download FastPing</a>
+      </div>
+      <div class="version">
+        <img src="assets/screenshots/Lite.png" alt="FastPing Lite">
+        <h2>FastPing Lite</h2>
+        <p>Lightweight edition for users who want fast, simple optimization without any setup — quick and safe improvements in one click.</p>
+        <a href="assets/dist/FastPing_Lite.exe" class="btn primary" download>Download Lite</a>
       </div>
     </div>
-    <a href="#uiModal"><img src="assets/screenshots/UI.png" alt="FastPing Showcase"></a>
   </section>
-  <div id="uiModal" class="modal">
-    <a href="#!" style="position:absolute;top:20px;right:30px;font-size:48px;color:#fff;text-decoration:none;">&times;</a>
-    <img src="assets/screenshots/UI.png" alt="FastPing Showcase Modal">
-  </div>
+
   <section id="features" class="features">
-    <h2>Why Choose FastPing?</h2>
+    <h2>FastPing Features</h2>
     <div class="feature-grid">
-      <div class="feature"><h3>Low Latency</h3><p>Instantly Lower you're ping and and fix internet instability.</p></div>
-      <div class="feature"><h3>Smart Packets</h3><p>Dynamically adjusts packet handling to reduce jitter and improve stability.</p></div>
-      <div class="feature"><h3>Not Bannable</h3><p>Optimize packets in a legit way.</p></div>
-      <div class="feature"><h3>Fast Update</h3><p>Always aim for the best experience.</p></div>
-      <div class="feature"><h3>Open Source</h3><p>Completely Safe and you can check the code at GitHub.</p></div>
-      <div class="feature"><h3>Better ping</h3><p>Improved hit registration and lower ping.</p></div>
-      <div class="feature"><h3>Completely Free</h3><p>No payments or limits. 100% free and open-source.</p></div>
-      <div class="feature"><h3>Discord Supports</h3><p>Feel free to ask questions on Discord.</p></div>
-      <div class="feature"><h3>Costume Connfig</h3><p>You can set it minimal,normal,and max to use maxe use the image config up.</p></div>
+      <div class="feature"><h3>Advanced Optimization</h3><p>Improves hit registration, packet routing, and latency dynamically.</p></div>
+      <div class="feature"><h3>Custom Profiles</h3><p>Switch between Minimal, Normal, and Max performance modes for full control.</p></div>
+      <div class="feature"><h3>Auto Update</h3><p>Automatically keeps your configuration optimized for the latest Minecraft versions.</p></div>
+      <div class="feature"><h3>Enhanced GUI</h3><p>Clean and responsive UI designed for quick adjustments and monitoring.</p></div>
+      <div class="feature"><h3>Open Source</h3><p>Fully transparent and available on GitHub for anyone to inspect.</p></div>
+      <div class="feature"><h3>Legit Optimization</h3><p>No injection or cheats — all network-level optimizations are 100% safe.</p></div>
+      <div class="feature"><h3>Low Latency</h3><p>Significantly reduces ping and improves stability on any server.</p></div>
+      <div class="feature"><h3>Active Discord Support</h3><p>Get help, share feedback, and stay updated with the FastPing community.</p></div>
     </div>
   </section>
-  <section id="faq" class="faq">
-    <h2>Frequently Asked Questions</h2>
-    <details><summary>Is FastPing safe to use?</summary><p>Yes, FastPing is completely safe. It only tweaks Windows networking settings.</p></details>
-    <details><summary>Does it really improve ping?</summary><p>Yes you can check our review at our discord server.</p></details>
-    <details><summary>Is it open-source?</summary><p>Yes!it is on github.</p></details>
-    <details><summary>Is it free?</summary><p>Yes there is no paid version but will be.</p></details>
-  </section>
+
   <footer>
     <p>© 2025 FastPing | <a href="https://github.com/WraithMC/FastPing">GitHub</a> | <a href="https://discord.gg/T8GFc6ryGy">Discord</a></p>
   </footer>
