@@ -1,213 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FastPing - Optimize your connection in Minecraft</title>
-  <link rel="icon" href="assets/logo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{
-      font-family:'Poppins',sans-serif;
-      background:#000;
-      color:#fff;
-      overflow-x:hidden;
-      scroll-behavior:smooth;
-    }
-    nav{
-      position:fixed;top:0;left:0;width:100%;
-      backdrop-filter:blur(20px);
-      background:rgba(0,0,0,0.65);
-      border-bottom:1px solid rgba(255,255,255,0.05);
-      display:flex;align-items:center;justify-content:space-between;
-      padding:18px 6%;z-index:1000;transition:all .3s ease;
-    }
-    nav img{height:46px;filter:brightness(1.2);transition:transform .3s ease;cursor:pointer}
-    nav img:hover{transform:scale(1.06)}
-    nav ul{list-style:none;display:flex;gap:32px}
-    nav a{text-decoration:none;color:#e0e0e0;font-weight:500;font-size:15px;transition:.3s}
-    nav a:hover{color:#fff}
-    .hero{
-      min-height:100vh;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;
-      text-align:center;padding:160px 6% 100px;
-      opacity:0;transform:translateY(30px);
-      animation:fadeIn .9s ease forwards;
-    }
-    @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
-    .hero h1{font-size:3rem;font-weight:700;margin-bottom:12px;line-height:1.1}
-    .hero p{color:#bdbdbd;font-size:1.1rem;margin-bottom:40px;line-height:1.7}
-    .version-container{
-      display:flex;flex-wrap:wrap;justify-content:center;gap:60px;
-      width:100%;max-width:1200px;
-    }
-    .version{
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:28px;
-      padding:40px;
-      max-width:500px;
-      text-align:center;
-      transition:all .4s ease;
-    }
-    .version:hover{background:rgba(255,255,255,0.06);transform:translateY(-6px) scale(1.02);border-color:rgba(255,255,255,0.2)}
-    .version img{
-      width:100%;border-radius:22px;margin-bottom:20px;
-      border:1px solid rgba(255,255,255,0.05);
-      filter:drop-shadow(0 0 20px rgba(255,255,255,0.1));
-      transition:transform .3s ease;
-    }
-    .version img:hover{transform:scale(1.03)}
-    .version h2{font-size:1.8rem;margin-bottom:12px}
-    .version p{color:#aaa;font-size:1rem;margin-bottom:25px;line-height:1.6}
-    .btn{
-      padding:14px 34px;border-radius:50px;font-weight:600;font-size:1rem;
-      text-decoration:none;transition:all .3s ease;border:none;
-      backdrop-filter:blur(20px);display:inline-block;
-    }
-    .btn.primary{background:rgba(255,255,255,0.08);color:#fff}
-    .btn.primary:hover{background:rgba(255,255,255,0.16);transform:translateY(-3px) scale(1.05)}
-    .features{
-      text-align:center;padding:160px 10%;background:#050505;
-      animation:fadeIn .8s ease forwards;
-    }
-    .features h2{font-size:2.6rem;font-weight:700;margin-bottom:60px;letter-spacing:-0.5px}
-    .feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px}
-    .feature{
-      background:rgba(255,255,255,0.03);
-      padding:40px;border-radius:28px;
-      border:1px solid rgba(255,255,255,0.05);
-      transition:all .4s ease;
-    }
-    .feature:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06);transform:translateY(-6px) scale(1.02)}
-    .feature h3{color:#fff;font-size:1.3rem;margin-bottom:12px}
-    .feature p{color:#a9a9a9;font-size:.95rem;line-height:1.7}
-    .how-it-works{
-      text-align:center;padding:160px 10%;background:#0a0a0a;
-    }
-    .how-it-works h2{font-size:2.6rem;font-weight:700;margin-bottom:60px;letter-spacing:-0.5px}
-    .how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px}
-    .how-item{
-      background:rgba(255,255,255,0.03);
-      padding:40px;border-radius:28px;
-      border:1px solid rgba(255,255,255,0.05);
-      transition:all .4s ease;
-    }
-    .how-item:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.06);transform:translateY(-6px) scale(1.02)}
-    .how-item h3{color:#fff;font-size:1.3rem;margin-bottom:12px}
-    .how-item p{color:#a9a9a9;font-size:.95rem;line-height:1.7}
-    .faq{
-      text-align:center;padding:160px 10%;background:#050505;
-    }
-    .faq h2{font-size:2.6rem;font-weight:700;margin-bottom:60px;letter-spacing:-0.5px}
-    .faq-item{
-      background:rgba(255,255,255,0.03);
-      padding:30px 40px;
-      margin-bottom:20px;
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,0.05);
-      text-align:left;
-      transition:all .3s ease;
-      cursor:pointer;
-    }
-    .faq-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.2)}
-    .faq-item h3{color:#fff;font-size:1.2rem;margin-bottom:8px}
-    .faq-item p{color:#aaa;font-size:1rem;line-height:1.6;display:none}
-    footer{text-align:center;padding:60px 10%;border-top:1px solid rgba(255,255,255,0.05);background:#000;color:#777;font-size:.9rem}
-    footer a{color:#fff;text-decoration:none}
-    footer a:hover{text-decoration:underline}
-    @media(max-width:950px){.version-container,.how-grid{flex-direction:column;align-items:center}.version,.how-item{max-width:90%}}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FastPing - Optimize Your Minecraft PvP</title>
+<link rel="icon" href="assets/logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Poppins',sans-serif;
+  background: url('assets/BG.png') no-repeat center center fixed;
+  background-size: cover;
+  color:#fff;
+  overflow-x:hidden;
+  scroll-behavior:smooth;
+  position: relative;
+}
+body::before{
+  content:"";
+  position:absolute;
+  top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.65);
+  z-index:-1;
+}
+nav{
+  position:fixed;top:0;left:0;width:100%;
+  backdrop-filter:blur(15px);
+  background:rgba(10,10,10,0.85);
+  display:flex;justify-content:space-between;align-items:center;
+  padding:15px 6%;z-index:1000;
+}
+nav img{height:50px;cursor:pointer;transition:.3s}
+nav img:hover{transform:scale(1.08)}
+nav ul{display:flex;gap:30px;list-style:none}
+nav a{text-decoration:none;color:#ccc;font-weight:500;transition:.3s}
+nav a:hover{color:#fff}
+.hero{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;text-align:center;padding:150px 6% 80px;
+}
+.hero h1{font-size:3rem;font-weight:700;line-height:1.2;margin-bottom:15px}
+.hero p{color:#aaa;font-size:1.2rem;margin-bottom:40px;max-width:700px}
+.btn{
+  padding:14px 36px;border-radius:50px;font-weight:600;font-size:1rem;
+  text-decoration:none;transition:.3s;border:none;
+  backdrop-filter:blur(15px);display:inline-block;
+  background: rgba(255,255,255,0.05);
+  color:#fff;
+  cursor:pointer;
+}
+.btn.primary:hover{background:rgba(255,255,255,0.12);transform:translateY(-3px) scale(1.05)}
+.section{padding:120px 10%}
+.section h2{font-size:2.6rem;font-weight:700;margin-bottom:60px;text-align:center}
+.version-container{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:40px;
+}
+.version{
+  background:rgba(17,17,17,0.85);
+  border-radius:20px;
+  padding:30px;
+  max-width:350px;
+  text-align:center;
+  transition:.4s;
+  box-shadow:0 4px 25px rgba(0,0,0,0.6);
+}
+.version:hover{transform:translateY(-6px)}
+.version img{width:100%;border-radius:15px;margin-bottom:20px;transition:.3s}
+.version h3{font-size:1.5rem;margin-bottom:10px}
+.version p{color:#aaa;font-size:0.95rem;margin-bottom:20px}
+.feature-grid,.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:40px;margin-top:50px}
+.feature,.how-item{
+  background:rgba(17,17,17,0.85);
+  padding:30px;border-radius:20px;transition:.4s;box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+.feature h3,.how-item h3{margin-bottom:10px;color:#fff}
+.feature p,.how-item p{color:#aaa;font-size:0.95rem;line-height:1.6}
+.feature:hover,.how-item:hover{transform:translateY(-6px);box-shadow:0 8px 30px rgba(0,0,0,0.7)}
+.faq{padding:120px 10%;background:rgba(15,15,15,0.9)}
+.faq-item{
+  background:rgba(17,17,17,0.85);
+  padding:20px 30px;border-radius:15px;margin-bottom:15px;
+  border-left:3px solid #555;cursor:pointer;transition:.3s;
+}
+.faq-item:hover{border-left-color:#fff}
+.faq-item h3{font-size:1.2rem;margin-bottom:8px}
+.faq-item p{display:none;color:#aaa;font-size:0.95rem;line-height:1.5;margin-top:5px}
+footer{text-align:center;padding:50px 10%;border-top:1px solid #222;color:#777;font-size:0.9rem;background:rgba(10,10,10,0.9)}
+footer a{color:#fff;text-decoration:none}
+footer a:hover{text-decoration:underline}
+@media(max-width:950px){.version-container,.feature-grid,.how-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <nav>
-    <div class="logo"><img src="assets/logo.png" alt="FastPing Logo"></div>
-    <ul>
-      <li><a href="#versions">Versions</a></li>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#how-it-works">How It Works</a></li>
-      <li><a href="#faq">FAQ</a></li>
-      <li><a href="https://github.com/WraithMC/FastPing" target="_blank">GitHub</a></li>
-      <li><a href="https://discord.gg/T8GFc6ryGy" target="_blank">Discord</a></li>
-    </ul>
-  </nav>
 
-  <section id="versions" class="hero">
-    <h1>Like Cafeine in Minecraft</h1>
-    <h1>Gain Advantage In a Legit Way</h1>
-    <div class="version-container">
-      <div class="version">
-        <img src="assets/screenshots/UI.png" alt="FastPing">
-        <h2>FastPing</h2>
-        <p>Full-featured version with enhanced packet optimization, custom configs, and improved performance for Minecraft players who want maximum stability and speed.</p>
-        <a href="assets/dist/FastPing.exe" class="btn primary" download>Download FastPing</a>
-      </div>
-      <div class="version">
-        <img src="https://github.com/WraithMC/FastPing/blob/main/Lite.png?raw=true" alt="FastPing Lite">
-        <h2>FastPing Lite</h2>
-        <p>Lightweight edition for users who want fast, simple optimization without any setup — quick and safe improvements in one click.</p>
-        <a href="https://release-assets.githubusercontent.com/github-production-release-asset/1091139628/f1f79cb0-4ebc-4cf6-94ad-810af1dab320?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-11T20%3A29%3A28Z&rscd=attachment%3B+filename%3DFastPing_Lite.exe&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2025-11-11T19%3A28%3A52Z&ske=2025-11-11T20%3A29%3A28Z&sks=b&skv=2018-11-09&sig=nsWMlQVSt21sh9x87e7Q0A14dUtGz987%2F7U75GCODto%3D&jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmVsZWFzZS1hc3NldHMuZ2l0aHVidXNlcmNvbnRlbnQuY29tIiwia2V5Ijoia2V5MSIsImV4cCI6MTc2Mjg5MTE0MSwibmJmIjoxNzYyODg5MzQxLCJwYXRoIjoicmVsZWFzZWFzc2V0cHJvZHVjdGlvbi5ibG9iLmNvcmUud2luZG93cy5uZXQifQ.YEmQrcUmj0hIiHHxiqjQKqnVBJtPyufcB1i7XK0Gv5o&response-content-disposition=attachment%3B%20filename%3DFastPing_Lite.exe&response-content-type=application%2Foctet-stream" class="btn primary" download>Download Lite</a>
-      </div>
-    </div>
-  </section>
+<nav>
+  <div class="logo"><img src="assets/logo.png" alt="FastPing Logo"></div>
+  <ul>
+    <li><a href="#versions">Versions</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="https://github.com/WraithMC/FastPing" target="_blank">GitHub</a></li>
+    <li><a href="https://discord.gg/T8GFc6ryGy" target="_blank">Discord</a></li>
+  </ul>
+</nav>
 
-  <section id="features" class="features">
-    <h2>FastPing Features</h2>
-    <div class="feature-grid">
-      <div class="feature"><h3>Advanced Optimization</h3><p>Improves hit registration, packet routing, and latency dynamically.</p></div>
-      <div class="feature"><h3>Custom Profiles</h3><p>Switch between Minimal, Normal, and Max performance modes for full control.</p></div>
-      <div class="feature"><h3>Auto Update</h3><p>Automatically keeps your configuration optimized for the latest Minecraft versions.</p></div>
-      <div class="feature"><h3>Enhanced GUI</h3><p>Clean and responsive UI designed for quick adjustments and monitoring.</p></div>
-      <div class="feature"><h3>Open Source</h3><p>Fully transparent and available on GitHub for anyone to inspect.</p></div>
-      <div class="feature"><h3>Legit Optimization</h3><p>No injection or cheats — all network-level optimizations are 100% safe.</p></div>
-      <div class="feature"><h3>Low Latency</h3><p>Significantly reduces ping and improves stability on any server.</p></div>
-      <div class="feature"><h3>Active Discord Support</h3><p>Get help, share feedback, and stay updated with the FastPing community.</p></div>
-    </div>
-  </section>
+<section class="hero">
+  <h1>Like Cafeine in Minecraft</h1>
+  <p>FastPing gives you smoother hit registration, faster potting, and reliable rodding. Optimize your connection and gain the edge in Minecraft combat.</p>
+  <a href="#versions" class="btn primary">Download Now</a>
+</section>
 
-  <section id="how-it-works" class="how-it-works">
-    <h2>How FastPing Works in PvP</h2>
-    <div class="how-grid">
-      <div class="how-item"><h3>Rodding / Knockback Control</h3><p>Optimizes packet timing so that rod and knockback interactions are more reliable, allowing consistent PvP combos.</p></div>
-      <div class="how-item"><h3>Potting Speed</h3><p>Reduces latency and ensures smoother potion usage, making it easier to heal quickly without delays in combat.</p></div>
-      <div class="how-item"><h3>Hit Registration</h3><p>Enhances hit detection by optimizing packet flow, so every sword swing or bow shot registers accurately during intense fights.</p></div>
-      <div class="how-item"><h3>Network Stability</h3><p>Minimizes packet loss and jitter, keeping your connection stable for lag-free PvP interactions.</p></div>
+<section id="versions" class="section">
+  <h2>Versions</h2>
+  <div class="version-container">
+    <div class="version">
+      <img src="assets/screenshots/UI.png" alt="FastPing">
+      <h3>FastPing</h3>
+      <p>Full-featured version with enhanced packet optimization, custom configs, and max PvP performance.</p>
+      <a href="assets/dist/FastPing.exe" class="btn primary">Download</a>
     </div>
-  </section>
+    <div class="version">
+      <img src="https://github.com/WraithMC/FastPing/blob/main/Lite.png?raw=true" alt="FastPing Lite">
+      <h3>FastPing Lite</h3>
+      <p>Lightweight version for instant optimization without configuration.</p>
+      <a href="https://release-assets.githubusercontent.com/github-production-release-asset/1091139628/f1f79cb0-4ebc-4cf6-94ad-810af1dab320?sp=r&sv=2018-11-09&sr=b&spr=https&se=2025-11-11T20%3A29%3A28Z&rscd=attachment%3B+filename%3DFastPing_Lite.exe&rsct=application%2Foctet-stream" class="btn primary">Download Lite</a>
+    </div>
+  </div>
+</section>
 
-  <section id="faq" class="faq">
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-item">
-      <h3>Is FastPing safe to use?</h3>
-      <p>Yes, all optimizations are network-level adjustments. No hacks, cheats, or injections are used. It is 100% safe for Minecraft.</p>
-    </div>
-    <div class="faq-item">
-      <h3>Will this improve my ping?</h3>
-      <p>FastPing optimizes packet routing and reduces latency for more stable gameplay. Exact results depend on your connection and server location.</p>
-    </div>
-    <div class="faq-item">
-      <h3>Does it work with all Minecraft versions?</h3>
-      <p>Yes, FastPing supports all versions. Auto-update keeps your configuration compatible with new updates.</p>
-    </div>
-    <div class="faq-item">
-      <h3>Do I need to configure anything?</h3>
-      <p>FastPing Lite requires no setup. The full version allows custom profiles for advanced optimization.</p>
-    </div>
-  </section>
+<section id="features" class="section">
+  <h2>Features</h2>
+  <div class="feature-grid">
+    <div class="feature"><h3>Advanced Optimization</h3><p>Improves hit registration, packet routing, and latency dynamically.</p></div>
+    <div class="feature"><h3>Custom Profiles</h3><p>Switch between Minimal, Normal, and Max performance modes for full control.</p></div>
+    <div class="feature"><h3>Auto Update</h3><p>Keeps your configuration optimized for the latest Minecraft versions automatically.</p></div>
+    <div class="feature"><h3>Legit Optimization</h3><p>Does not only show the GUI but also make them works.</p></div>
+  </div>
+</section>
 
-  <footer>
-    <p>© 2025 FastPing | <a href="https://github.com/WraithMC/FastPing">GitHub</a> | <a href="https://discord.gg/T8GFc6ryGy">Discord</a></p>
-  </footer>
+<section id="how-it-works" class="section">
+  <h2>How It Works</h2>
+  <div class="how-grid">
+    <div class="how-item"><h3>Rodding / Knockback</h3><p>Optimizes packet timing to make knockback interactions consistent for PvP combos.</p></div>
+    <div class="how-item"><h3>Potting Speed</h3><p>Reduces delay for faster healing with potions during fights.</p></div>
+    <div class="how-item"><h3>Hit Registration</h3><p>Enhances hit detection for every sword swing and bow shot in combat.</p></div>
+    <div class="how-item"><h3>Network Stability</h3><p>Minimizes packet loss and jitter for smooth, lag-free PvP performance.</p></div>
+  </div>
+</section>
 
-  <script>
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const p = item.querySelector('p');
-        p.style.display = p.style.display === 'block' ? 'none' : 'block';
-      });
-    });
-  </script>
+<section id="faq" class="faq">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <h3>Is FastPing safe?</h3>
+    <p>Yes, it’s 100% and open source.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Will it improve my ping?</h3>
+    <p>It reduces latency and stabilizes your connection, but results vary depending on your network.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Does it work on all Minecraft versions?</h3>
+    <p>Yes, it supports all versions with auto-updates for new releases.</p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 FastPing | <a href="https://github.com/WraithMC/FastPing">GitHub</a> | <a href="https://discord.gg/T8GFc6ryGy">Discord</a></p>
+</footer>
+
+<script>
+const faqItems=document.querySelectorAll('.faq-item');
+faqItems.forEach(item=>{
+  item.addEventListener('click',()=>{
+    const p=item.querySelector('p');
+    p.style.display=p.style.display==='block'?'none':'block';
+  });
+});
+const scrollButtons=document.querySelectorAll('.btn[href^="#"]');
+scrollButtons.forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    e.preventDefault();
+    const target=document.querySelector(btn.getAttribute('href'));
+    if(target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+
 </body>
 </html>
