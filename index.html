@@ -46,8 +46,7 @@ nav a:hover{color:#fff}
   text-decoration:none;transition:.3s;border:none;
   backdrop-filter:blur(15px);display:inline-block;
   background:rgba(255,255,255,0.05);
-  color:#fff;
-  cursor:pointer;
+  color:#fff;cursor:pointer;
 }
 .btn.primary:hover{background:rgba(255,255,255,0.12);transform:translateY(-3px) scale(1.05)}
 .section{padding:120px 10%}
@@ -74,6 +73,36 @@ nav a:hover{color:#fff}
 .feature h3,.how-item h3{margin-bottom:10px;color:#fff}
 .feature p,.how-item p{color:#aaa;font-size:0.95rem;line-height:1.6}
 .feature:hover,.how-item:hover{transform:translateY(-6px);box-shadow:0 8px 30px rgba(0,0,0,0.7)}
+.reviews-container{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:35px;
+  margin-top:60px;
+}
+.review{
+  background:rgba(17,17,17,0.75);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:30px;
+  transition:all .4s ease;
+  box-shadow:0 0 30px rgba(0,0,0,0.5);
+}
+.review:hover{
+  transform:translateY(-6px);
+  box-shadow:0 0 40px rgba(255,255,255,0.1);
+}
+.review h3{
+  font-size:1rem;
+  font-weight:600;
+  color:#fff;
+  margin-bottom:10px;
+}
+.review p{
+  color:#aaa;
+  font-size:0.95rem;
+  line-height:1.5;
+}
 .faq{padding:120px 10%;background:rgba(15,15,15,0.9)}
 .faq-item{
   background:rgba(17,17,17,0.85);
@@ -86,6 +115,8 @@ nav a:hover{color:#fff}
 footer{text-align:center;padding:50px 10%;border-top:1px solid #222;color:#777;font-size:0.9rem;background:rgba(10,10,10,0.9)}
 footer a{color:#fff;text-decoration:none}
 footer a:hover{text-decoration:underline}
+.hidden{opacity:0;transform:translateY(50px);transition:opacity 1.4s ease,transform 1.4s ease}
+.visible{opacity:1;transform:translateY(0)}
 @media(max-width:950px){.version-container,.feature-grid,.how-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -97,6 +128,7 @@ footer a:hover{text-decoration:underline}
     <li><a href="#versions">Versions</a></li>
     <li><a href="#features">Features</a></li>
     <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#reviews">Reviews</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li><a href="https://github.com/WraithMC/FastPing" target="_blank">GitHub</a></li>
     <li><a href="https://discord.gg/T8GFc6ryGy" target="_blank">Discord</a></li>
@@ -147,20 +179,23 @@ footer a:hover{text-decoration:underline}
   </div>
 </section>
 
+<section id="reviews" class="section">
+  <h2>Community Reviews</h2>
+  <div class="reviews-container">
+    <div class="review"><h3>⭐ FastPing</h3><p>9/10 — Need more features like on EZ Ping.</p></div>
+    <div class="review"><h3>⭐ yassinMMK</h3><p>8.9/10 — Really good, aggressive mode is the best. Needs more tuning for low-end PCs and AMD cards.</p></div>
+    <div class="review"><h3>⭐ Slav Dog</h3><p>7/10 — Needs more options for Minecraft and support for more games and apps.</p></div>
+    <div class="review"><h3>⭐ REXO</h3><p>9/10 — Pretty good but laggy menu.</p></div>
+    <div class="review"><h3>⭐ BlackPutin</h3><p>10/10 — Honestly FastPing is so good. My ping dropped a lot and games feel smoother. Simple to use, free, and worth it!</p></div>
+    <div class="review"><h3>⭐ TheInker</h3><p>4/10 — Too laggy and buggy. Slight ping improvement but drops FPS. Needs optimization for smoother gameplay.</p></div>
+  </div>
+</section>
+
 <section id="faq" class="faq">
   <h2>Frequently Asked Questions</h2>
-  <div class="faq-item">
-    <h3>Is FastPing safe?</h3>
-    <p>Yes, it’s 100% safe with network-level optimizations and no cheats.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Will it improve my ping?</h3>
-    <p>It reduces latency and stabilizes your connection, but results vary depending on your network.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Does it work on all Minecraft versions?</h3>
-    <p>Yes, it supports all versions with auto-updates for new releases.</p>
-  </div>
+  <div class="faq-item"><h3>Is FastPing safe?</h3><p>Yes, it’s 100% safe with network-level optimizations and no cheats.</p></div>
+  <div class="faq-item"><h3>Will it improve my ping?</h3><p>It reduces latency and stabilizes your connection, but results vary depending on your network.</p></div>
+  <div class="faq-item"><h3>Does it work on all Minecraft versions?</h3><p>Yes, it supports all versions with auto-updates for new releases.</p></div>
 </section>
 
 <footer>
@@ -175,6 +210,7 @@ faqItems.forEach(item=>{
     p.style.display=p.style.display==='block'?'none':'block';
   });
 });
+
 const scrollButtons=document.querySelectorAll('a[href^="#"]');
 scrollButtons.forEach(btn=>{
   btn.addEventListener('click',e=>{
@@ -183,7 +219,7 @@ scrollButtons.forEach(btn=>{
     if(target){
       const start=window.scrollY;
       const end=target.getBoundingClientRect().top+window.scrollY;
-      const duration=1400;
+      const duration=1800;
       let startTime=null;
       function animateScroll(currentTime){
         if(!startTime)startTime=currentTime;
@@ -196,37 +232,23 @@ scrollButtons.forEach(btn=>{
     }
   });
 });
-</script>
 
-</body>
-</html>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const sections = document.querySelectorAll("section, footer");
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
+document.addEventListener("DOMContentLoaded",()=>{
+  const sections=document.querySelectorAll("section, footer");
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
         entry.target.classList.add("visible");
         observer.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.15 });
-  sections.forEach(section => {
+  },{threshold:0.15});
+  sections.forEach(section=>{
     section.classList.add("hidden");
     observer.observe(section);
   });
 });
 </script>
 
-<style>
-.hidden {
-  opacity: 0;
-  transform: translateY(50px);
-  transition: opacity 1s ease, transform 1s ease;
-}
-.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-</style>
-
+</body>
+</html>
