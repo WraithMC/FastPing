@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FastPing - Optimize Your Minecraft PvP</title>
+<title>FastPing - Stabilize your ping</title>
 <link rel="icon" href="assets/logo.png" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -24,29 +24,69 @@ body::before{
   z-index:-1;
 }
 nav{
-  position:fixed;top:0;left:0;width:100%;
+  position:fixed;
+  top:0;left:0;
+  width:100%;
+  height:75px;
   backdrop-filter:blur(15px);
   background:rgba(10,10,10,0.85);
-  display:flex;justify-content:space-between;align-items:center;
-  padding:15px 6%;z-index:1000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+  padding:0 6%;
 }
-nav img{height:50px;cursor:pointer;transition:.3s}
-nav img:hover{transform:scale(1.08)}
-nav ul{display:flex;gap:30px;list-style:none}
-nav a{text-decoration:none;color:#ccc;font-weight:500;transition:.3s}
+nav .logo{
+  position:absolute;
+  left:6%;
+  display:flex;
+  align-items:center;
+}
+nav .logo img{
+  height:48px;
+  cursor:pointer;
+  transition:.3s;
+}
+nav .logo img:hover{transform:scale(1.08)}
+nav ul{
+  display:flex;
+  gap:35px;
+  list-style:none;
+  justify-content:center;
+  align-items:center;
+}
+nav a{
+  text-decoration:none;
+  color:#ccc;
+  font-weight:500;
+  transition:.3s;
+  font-size:1rem;
+}
 nav a:hover{color:#fff}
 .hero{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:100vh;text-align:center;padding:150px 6% 80px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  text-align:center;
+  padding:150px 6% 80px;
 }
 .hero h1{font-size:3rem;font-weight:700;line-height:1.2;margin-bottom:15px}
 .hero p{color:#aaa;font-size:1.2rem;margin-bottom:40px;max-width:700px}
 .btn{
-  padding:14px 36px;border-radius:50px;font-weight:600;font-size:1rem;
-  text-decoration:none;transition:.3s;border:none;
-  backdrop-filter:blur(15px);display:inline-block;
+  padding:14px 36px;
+  border-radius:50px;
+  font-weight:600;
+  font-size:1rem;
+  text-decoration:none;
+  transition:.3s;
+  border:none;
+  backdrop-filter:blur(15px);
+  display:inline-block;
   background:rgba(255,255,255,0.05);
-  color:#fff;cursor:pointer;
+  color:#fff;
+  cursor:pointer;
 }
 .btn.primary:hover{background:rgba(255,255,255,0.12);transform:translateY(-3px) scale(1.05)}
 .section{padding:120px 10%}
@@ -117,7 +157,12 @@ footer a{color:#fff;text-decoration:none}
 footer a:hover{text-decoration:underline}
 .hidden{opacity:0;transform:translateY(50px);transition:opacity 1.4s ease,transform 1.4s ease}
 .visible{opacity:1;transform:translateY(0)}
-@media(max-width:950px){.version-container,.feature-grid,.how-grid{grid-template-columns:1fr}}
+@media(max-width:950px){
+  nav ul{flex-wrap:wrap;gap:20px}
+  nav .logo{position:relative;left:0;margin-bottom:10px}
+  nav{flex-direction:column;height:auto;padding:20px 5%}
+  .version-container,.feature-grid,.how-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -136,7 +181,7 @@ footer a:hover{text-decoration:underline}
 </nav>
 
 <section class="hero">
-  <h1>Maximize Your PvP Potential</h1>
+  <h1>Like Cafeine In Minecraft</h1>
   <p>FastPing gives you smoother hit registration, faster potting, and reliable rodding. Optimize your connection and gain the edge in Minecraft combat.</p>
   <a href="#versions" class="btn primary">Download Now</a>
 </section>
