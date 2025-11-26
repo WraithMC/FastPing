@@ -123,12 +123,13 @@ def save_config():
         "priority": priority_var.get(),
         "responsiveness": int(responsiveness_var.get()),
         "low_latency": bool(low_latency_var.get()),
+        "connection": connection_var.get()
     }
     try:
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(cfg, f, indent=2)
         status_var.set("Settings saved")
-    except Exception as e:
+    except Exception:
         status_var.set(f"Save failed")
 
 def load_config():
@@ -141,6 +142,7 @@ def load_config():
             priority_var.set(data.get("priority", "Normal"))
             responsiveness_var.set(int(data.get("responsiveness", 50)))
             low_latency_var.set(bool(data.get("low_latency", False)))
+            connection_var.set(data.get("connection", "Fiber"))
             status_var.set("Config loaded")
     except Exception:
         status_var.set("Config load failed")
@@ -197,9 +199,65 @@ def update_resources_smooth():
     finally:
         app.after(500, update_resources_smooth)
 
+def apply_connection_profile(profile: str):
+    if not is_windows():
+        return 1, "Unsupported"
+    try:
+        if profile == "Fiber":
+            run_netsh('netsh interface tcp set global autotuninglevel=normal')
+            run_netsh('netsh interface tcp set global ecncapability=enabled')
+            run_netsh('netsh interface tcp set global rss=enabled')
+            run_netsh('netsh interface tcp set global dca=enabled')
+            run_netsh('netsh interface tcp set global congestionprovider=ctcp')
+            subprocess.run('reg delete "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TcpAckFrequency /f', shell=True)
+            subprocess.run('reg delete "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TCPNoDelay /f', shell=True)
+            run_netsh('netsh interface tcp set global timestamps=disabled')
+        elif profile == "DSL":
+            run_netsh('netsh interface tcp set global autotuninglevel=disabled')
+            run_netsh('netsh interface tcp set global ecncapability=disabled')
+            run_netsh('netsh interface tcp set global rss=disabled')
+            run_netsh('netsh interface tcp set global dca=disabled')
+            run_netsh('netsh interface tcp set global congestionprovider=none')
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TcpAckFrequency /t REG_DWORD /d 2 /f', shell=True)
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TCPNoDelay /t REG_DWORD /d 0 /f', shell=True)
+            run_netsh('netsh interface tcp set global timestamps=enabled')
+        elif profile == "Cable":
+            run_netsh('netsh interface tcp set global autotuninglevel=normal')
+            run_netsh('netsh interface tcp set global ecncapability=enabled')
+            run_netsh('netsh interface tcp set global rss=enabled')
+            run_netsh('netsh interface tcp set global dca=disabled')
+            run_netsh('netsh interface tcp set global congestionprovider=none')
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TcpAckFrequency /t REG_DWORD /d 1 /f', shell=True)
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TCPNoDelay /t REG_DWORD /d 1 /f', shell=True)
+            run_netsh('netsh interface tcp set global timestamps=disabled')
+        elif profile == "Satellite":
+            run_netsh('netsh interface tcp set global autotuninglevel=disabled')
+            run_netsh('netsh interface tcp set global ecncapability=disabled')
+            run_netsh('netsh interface tcp set global rss=disabled')
+            run_netsh('netsh interface tcp set global dca=disabled')
+            run_netsh('netsh interface tcp set global congestionprovider=none')
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TcpAckFrequency /t REG_DWORD /d 1 /f', shell=True)
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TCPNoDelay /t REG_DWORD /d 0 /f', shell=True)
+            run_netsh('netsh interface tcp set global timestamps=enabled')
+        elif profile == "Mobile":
+            run_netsh('netsh interface tcp set global autotuninglevel=normal')
+            run_netsh('netsh interface tcp set global ecncapability=disabled')
+            run_netsh('netsh interface tcp set global rss=enabled')
+            run_netsh('netsh interface tcp set global dca=disabled')
+            run_netsh('netsh interface tcp set global congestionprovider=none')
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TcpAckFrequency /t REG_DWORD /d 1 /f', shell=True)
+            subprocess.run('reg add "HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces" /v TCPNoDelay /t REG_DWORD /d 1 /f', shell=True)
+            run_netsh('netsh interface tcp set global timestamps=disabled')
+        else:
+            return 1, "Unknown profile"
+        return 0, "Profile applied"
+    except Exception as e:
+        return 1, str(e)
+
 def apply_settings():
     try:
         save_config()
+        apply_connection_profile(connection_var.get())
         apply_tcp_tweaks(bool(smart_packets_var.get()))
         set_low_latency_mode(bool(low_latency_var.get()))
         changed = set_java_priority(priority_var.get())
@@ -250,6 +308,7 @@ priority_var = ctk.StringVar(value="Normal")
 responsiveness_var = ctk.IntVar(value=50)
 low_latency_var = ctk.BooleanVar(value=False)
 status_var = ctk.StringVar(value="Ready")
+connection_var = ctk.StringVar(value="Fiber")
 
 main = ctk.CTkFrame(app, fg_color=BG, corner_radius=14)
 main.pack(fill="both", expand=True, padx=18, pady=18)
@@ -266,7 +325,7 @@ ctk.CTkLabel(left_h, text="FastPing", font=("Segoe UI", 22, "bold"), text_color=
 
 center_h = ctk.CTkFrame(header, fg_color=SUBPANEL)
 center_h.pack(side="left", padx=6, pady=8, expand=True, fill="x")
-ctk.CTkLabel(center_h, text="Optimize network, reduce lag, tune Java", font=("Segoe UI", 11), text_color=MUTED).pack(anchor="w")
+ctk.CTkLabel(center_h, text="", font=("Segoe UI", 11), text_color=MUTED).pack(anchor="w")
 
 right_h = ctk.CTkFrame(header, fg_color=SUBPANEL)
 right_h.pack(side="right", padx=12, pady=8)
@@ -319,6 +378,8 @@ ctk.CTkLabel(right, text="Java Priority", text_color=TEXT).pack(anchor="w", padx
 ctk.CTkOptionMenu(right, values=list(PRIORITY_CLASSES.keys()), variable=priority_var, fg_color=BUTTON_BG, text_color=TEXT, button_color=BUTTON_BG).pack(fill="x", padx=12, pady=8)
 ctk.CTkLabel(right, text="Tuning", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
 ctk.CTkOptionMenu(right, values=["Restricted","Balanced","Aggressive"], variable=tuning_var, fg_color=BUTTON_BG, text_color=TEXT, button_color=BUTTON_BG).pack(fill="x", padx=12, pady=8)
+ctk.CTkLabel(right, text="Connection Profile", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
+ctk.CTkOptionMenu(right, values=["Fiber","DSL","Cable","Satellite","Mobile"], variable=connection_var, fg_color=BUTTON_BG, text_color=TEXT, button_color=BUTTON_BG).pack(fill="x", padx=12, pady=8)
 
 ctk.CTkLabel(left, text="Responsiveness", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
 ctk.CTkSlider(left, from_=0, to=100, variable=responsiveness_var, progress_color=ACCENT_A, button_color=ACCENT_B).pack(fill="x", padx=12, pady=(4,10))
@@ -326,7 +387,7 @@ ctk.CTkSlider(left, from_=0, to=100, variable=responsiveness_var, progress_color
 footer = ctk.CTkFrame(main, fg_color=SUBPANEL, corner_radius=10)
 footer.pack(fill="x", padx=6, pady=(8,6))
 ctk.CTkLabel(footer, textvariable=status_var, anchor="w", text_color=MUTED).pack(side="left", padx=12)
-ctk.CTkLabel(footer, text="v2.3", anchor="e", text_color=MUTED).pack(side="right", padx=12)
+ctk.CTkLabel(footer, text="v2.5", anchor="e", text_color=MUTED).pack(side="right", padx=12)
 
 load_config()
 init_net_counters()
