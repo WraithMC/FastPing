@@ -1,0 +1,125 @@
+FastPing – Privacy Policy
+
+Last Updated: [Insert Date]
+
+FastPing (“we”, “our”, “the application”) is committed to protecting your privacy. This Privacy Policy explains what information we collect, how we use it, and your rights regarding that information.
+
+1. Information We Collect
+
+FastPing does not collect, store, or transmit any personal information.
+
+All processing happens locally on your device. No information is sent to our servers because we do not operate any servers.
+
+To function correctly, FastPing may temporarily access:
+
+a. Network Information (Local Only)
+
+Ping/latency
+
+Network routing path
+
+Connection stability info
+
+This data never leaves your device.
+
+b. System Information (Local Only)
+
+Operating system version
+
+Network adapter type
+
+Local device performance metrics
+
+This information is accessed only for optimization.
+We do not log, store, upload, or transmit it.
+
+2. What We Do NOT Collect
+
+FastPing does NOT collect:
+
+Names
+
+Emails
+
+IP addresses
+
+Device identifiers
+
+Account information
+
+Minecraft credentials
+
+Hardware serial numbers
+
+Location data
+
+Payment data
+
+Browsing activity
+
+Cookies or trackers
+
+FastPing does not use analytics, advertising, or cloud services.
+
+3. How Your Data Is Used
+
+Information accessed by FastPing is used only for:
+
+Network optimization
+
+Reducing ping
+
+Stabilizing routes
+
+All data stays on your device and is cleared when the app closes.
+
+4. Third-Party Services
+
+FastPing does not use:
+
+External servers
+
+Analytics providers
+
+Cloud logging
+
+Advertising services
+
+Your data never leaves your system.
+
+5. Data Sharing
+
+We do not share, sell, or transfer data to:
+
+Individuals
+
+Companies
+
+Advertisers
+
+Government entities
+
+Since we collect nothing, we have nothing to share.
+
+6. Security
+
+FastPing operates entirely offline.
+No user data is transmitted over the internet.
+This local-only design inherently protects your privacy.
+
+7. Children’s Privacy
+
+FastPing does not collect any personal information from users of any age, including children under 13.
+
+8. Changes to This Policy
+
+We may update this Privacy Policy as needed.
+The latest version will always appear on our GitHub repository or official website.
+
+9. Contact Us
+
+You can reach the FastPing team through these official channels:
+
+Discord:https://discord.com/invite/T8GFc6ryGy
+GitHub:https://github.com/WraithMC/FastPing
+Website:https://fastping.vercel.app/
