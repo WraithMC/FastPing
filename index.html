@@ -5,15 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>FastPing — Lower your ping</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<meta property="og:title" content="FastPing — Lower your ping">
+<meta property="og:description" content="Like caffeine for Minecraft. Lower latency. Faster hits. FastPing tunes networking behavior and packet timing to deliver smoother hit registration, faster potion use, and consistent knockback.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourwebsite.com">
+<meta property="og:image" content="https://yourwebsite.com/assets/UI.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FastPing — Lower your ping">
+<meta name="twitter:description" content="Like caffeine for Minecraft. Lower latency. Faster hits. FastPing tunes networking behavior and packet timing to deliver smoother hit registration, faster potion use, and consistent knockback.">
+<meta name="twitter:image" content="https://yourwebsite.com/assets/UI.png">
 <style>
-:root{
-  --bg:#071028;
-  --card:#0f1724;
-  --muted:#98a0b3;
-  --accent1:#6de7ff;
-  --accent2:#8b63ff;
-  --glass:rgba(255,255,255,0.04);
-}
+:root{--bg:#071028;--card:#0f1724;--muted:#98a0b3;--accent1:#6de7ff;--accent2:#8b63ff;--glass:rgba(255,255,255,0.04);}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-height:1.4;color:#e6eef8;background:linear-gradient(180deg,var(--bg) 0%,#03040a 100%);-webkit-font-smoothing:antialiased;position:relative;}
@@ -41,8 +43,9 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-hei
 .stat b{display:block;font-size:18px;color:#fff}
 .stat span{font-size:13px;color:var(--muted)}
 .preview{display:flex;justify-content:center;align-items:center}
-.preview .mock{width:100%;max-width:520px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);box-shadow:0 20px 60px rgba(3,6,14,0.6);background:linear-gradient(180deg,#060916,#021022)}
-.preview .mock img{width:100%;display:block}
+.preview .mock{width:100%;max-width:680px;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);box-shadow:0 28px 90px rgba(3,6,14,0.65);background:linear-gradient(180deg,#060916,#021022);transform-style:preserve-3d;transition:transform 280ms cubic-bezier(.2,.9,.3,1);will-change:transform;}
+.preview .mock img{width:100%;display:block;transform-origin:center center;transition:transform 200ms cubic-bezier(.2,.9,.3,1),box-shadow 200ms ease;}
+.preview .mock.is-hover img{box-shadow:0 38px 100px rgba(3,6,20,0.7);}
 .features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:36px}
 .feature{background:var(--card);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.03)}
 .feature h4{margin-bottom:8px;color:#fff}
@@ -58,17 +61,8 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-hei
 .review-text{color:var(--muted);font-size:14px;line-height:1.5}
 .footer{margin-top:60px;padding:28px 0;color:var(--muted);display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.03)}
 .footer a{color:var(--muted);text-decoration:none}
-@media (max-width:980px){
-  .hero{grid-template-columns:1fr;}
-  .features{grid-template-columns:1fr 1fr}
-  .pricing{grid-template-columns:1fr}
-  .container{padding:24px}
-}
-@media (max-width:520px){
-  .nav{display:none}
-  .title{font-size:28px}
-  .brand span{font-size:16px}
-}
+@media (max-width:980px){.hero{grid-template-columns:1fr;}.features{grid-template-columns:1fr 1fr}.pricing{grid-template-columns:1fr}.container{padding:24px}}
+@media (max-width:520px){.nav{display:none}.title{font-size:28px}.brand span{font-size:16px}}
 </style>
 </head>
 <body>
@@ -108,9 +102,10 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-hei
 </div>
 </div>
 <div class="preview">
-<div class="mock"><img src="assets/UI.png" alt="ui"></div>
+<div class="mock" id="mock">
+<img src="assets/UI.png" alt="ui" id="mock-img">
 </div>
-
+</div>
 <section class="section" style="margin-top:60px">
 <h2 style="font-size:28px;font-weight:800;margin-bottom:20px">Community Reviews</h2>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
@@ -122,7 +117,6 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-hei
 <div class="review-card"><div class="review-name">⭐ barely awake</div><div class="review-text">6/10 — Linux version needs dependencies, but it actually improves speed.</div></div>
 </div>
 </section>
-
 <section class="section" style="margin-top:60px">
 <h2 style="font-size:28px;font-weight:800;margin-bottom:20px">Proof It's Legit</h2>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
@@ -131,9 +125,7 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-hei
 <div class="review-card"><div class="review-name">Hundreds of Users</div><div class="review-text">A growing community actively uses FastPing daily.</div></div>
 </div>
 </section>
-
 </main>
-
 <section id="features" class="section">
 <h2 style="font-size:24px;margin-bottom:12px">What it does</h2>
 <p style="color:var(--muted);max-width:900px">FastPing focuses on stabilizing connection characteristics that affect combat responsiveness. It reduces jitter, smooths packet bursts, and provides predictable timing for PvP actions.</p>
@@ -143,7 +135,6 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-hei
 <div class="feature"><h4>Network stability</h4><p>Automatic adjustments to lower packet loss and jitter.</p></div>
 </div>
 </section>
-
 <section id="download" class="section">
 <h2 style="font-size:24px;margin-bottom:12px">Download</h2>
 <div class="pricing">
@@ -167,7 +158,6 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-hei
 </div>
 </div>
 </section>
-
 <section id="faq" class="section">
 <h2 style="font-size:24px;margin-bottom:12px">FAQ</h2>
 <div class="grid">
@@ -177,7 +167,6 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-hei
 </div>
 </div>
 </section>
-
 <footer class="footer">
 <div>© 2025 FastPing</div>
 <div>
@@ -188,9 +177,31 @@ body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-hei
 <a href="https://discord.gg/T8GFc6ryGy">Discord</a>
 </div>
 </footer>
-
 </div>
+<script>
+(function(){
+var mock=document.getElementById('mock');
+var maxRotate=18;
+var maxTranslateZ=60;
+function onEnter(){mock.classList.add('is-hover');}
+function onMove(e){
+var r=mock.getBoundingClientRect();
+var x=(e.clientX-(r.left+r.width/2))/(r.width/2);
+var y=(e.clientY-(r.top+r.height/2))/(r.height/2);
+if(x<-1)x=-1;if(x>1)x=1;if(y<-1)y=-1;if(y>1)y=1;
+var rx=-y*maxRotate;
+var ry=x*maxRotate;
+var depth=Math.max(20,Math.abs(x)*maxTranslateZ*0.7+Math.abs(y)*maxTranslateZ*0.3);
+mock.style.transform='perspective(1200px) translateZ('+depth+'px) rotateX('+rx+'deg) rotateY('+ry+'deg)';
+}
+function onLeave(){mock.classList.remove('is-hover');mock.style.transform='perspective(1200px) translateZ(0px) rotateX(0deg) rotateY(0deg)';}
+mock.addEventListener('mouseenter',onEnter);
+mock.addEventListener('mousemove',onMove);
+mock.addEventListener('mouseleave',onLeave);
+mock.addEventListener('touchstart',onEnter,{passive:true});
+mock.addEventListener('touchmove',function(e){onMove(e.touches[0]);},{passive:true});
+mock.addEventListener('touchend',onLeave);
+})();
+</script>
 </body>
 </html>
-
-
