@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>FastPing — Lower your ping</title>
-<meta name="description" content="Like caffeine for Minecraft. Lower latency. Faster hits. FastPing tunes networking behavior and packet timing to deliver smoother hit registration, faster potion use, and consistent knockback.">
 <link rel="icon" type="image/png" href="assets/logo.png">
 <link rel="shortcut icon" href="assets/logo.png">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FastPing — Lower your ping</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<meta property="og:title" content="FastPing — Lower your ping">
+<meta property="og:description" content="Like caffeine for Minecraft. Lower latency. Faster hits. FastPing tunes networking behavior and packet timing to deliver smoother hit registration, faster potion use, and consistent knockback.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourwebsite.com">
+<meta property="og:image" content="https://yourwebsite.com/assets/UI.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FastPing — Lower your ping">
+<meta name="twitter:description" content="Like caffeine for Minecraft. Lower latency. Faster hits. FastPing tunes networking behavior and packet timing to deliver smoother hit registration, faster potion use, and consistent knockback.">
+<meta name="twitter:image" content="https://yourwebsite.com/assets/UI.png">
 <style>
-:root{--bg:#071028;--card:#0f1724;--muted:#98a0b3;--accent1:#6de7ff;--accent2:#8b63ff;}
+:root{--bg:#071028;--card:#0f1724;--muted:#98a0b3;--accent1:#6de7ff;--accent2:#8b63ff;--glass:rgba(255,255,255,0.04);}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-height:1.4;color:#e6eef8;background:linear-gradient(180deg,var(--bg) 0%,#03040a 100%);-webkit-font-smoothing:antialiased;}
+html,body{height:100%}
+body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;line-height:1.4;color:#e6eef8;background:linear-gradient(180deg,var(--bg) 0%,#03040a 100%);-webkit-font-smoothing:antialiased;position:relative;}
 .video-bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;pointer-events:none}
 .video-overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(3,6,20,0.55),rgba(3,6,20,0.7));z-index:-1;pointer-events:none}
 .container{max-width:1200px;margin:0 auto;padding:40px 24px;position:relative;z-index:1}
@@ -64,7 +73,7 @@ html,body{height:100%;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neu
 <div class="container">
 <header class="header">
 <div class="brand">
-<img src="assets/logo.png" alt="FastPing logo">
+<img src="assets/logo.png" alt="logo">
 <span>FastPing</span>
 </div>
 <nav class="nav">
@@ -78,7 +87,7 @@ html,body{height:100%;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neu
 <div class="card-hero">
 <div class="kicker">PvP Toolkit</div>
 <h1 class="title">Like caffeine for Minecraft<br>Lower latency. Faster hits.</h1>
-<p class="lead">FastPing tunes networking behavior and packet timing to deliver smoother hit registration, faster potion use, and consistent knockback.</p>
+<p class="lead">FastPing tunes networking behavior and packet timing to deliver smoother hit registration, faster potion use, and consistent knockback for competitive Minecraft.</p>
 <div class="actions">
 <a class="btn-primary" href="#download">Download</a>
 <a class="btn-ghost" href="https://github.com/WraithMC/FastPing">Source</a>
@@ -96,7 +105,7 @@ html,body{height:100%;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neu
 </div>
 <div class="preview">
 <div class="mock" id="mock">
-<img src="assets/UI.png" alt="FastPing UI preview" id="mock-img">
+<img src="assets/UI.png" alt="ui" id="mock-img">
 </div>
 </div>
 <section class="section" style="margin-top:60px">
@@ -198,3 +207,4 @@ mock.addEventListener('touchend',onLeave);
 </script>
 </body>
 </html>
+
