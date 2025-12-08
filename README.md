@@ -1,3 +1,4 @@
+https://fastping.vercel.app/
 Features
 
 Gain the edge in PvP
