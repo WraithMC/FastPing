@@ -1,36 +1,59 @@
-https://fastping.vercel.app/
-Features
+# FastPing
 
-Gain the edge in PvP
-FastPing modifies the way your computer handles incoming and outgoing packets. The effects are most noticeable in hit registration, knockback, responsiveness, and anything connection-related in games.
+FastPing is a lightweight Windows utility designed to optimize system-level network behavior for improved responsiveness in online applications and games. By tuning existing operating system and runtime settings, FastPing enhances connection stability without modifying games or violating platform rules.
 
-No restarts needed
-Tired of restarting every time you change your network settings? FastPing’s instant update protocol allows you to apply changes immediately without interrupting your gameplay or workflow.
+---
 
-Not a cheat
-FastPing does not directly modify any games or applications. It is not a network limiter, lag switcher, or anything that violates rules—it only optimizes your preexisting computer settings.
+## Key Benefits
 
-Simple settings
-No overwhelming menus or meaningless options. FastPing exposes only the essential settings, keeping everything simple while hiding complexity under the hood.
+### Improved PvP Responsiveness
+FastPing optimizes how incoming and outgoing packets are handled by your system. This can result in more consistent hit registration, smoother knockback behavior, reduced delay, and improved overall responsiveness in latency-sensitive environments.
 
-Help & Support
-Have questions, suggestions, or concerns? Our support is available to guide you and ensure your experience is smooth and optimized.
+### Instant Configuration Updates
+Changes are applied immediately. No restarts, no reconnecting, and no disruption to gameplay or workflow.
 
-Installation
+### Safe and Rule-Compliant
+FastPing does not inject into games, modify application memory, simulate lag, or interfere with servers. It operates strictly at the system configuration level and does not function as a cheat or exploit.
 
-Go to the Releases page of this repository.
+### Minimal and Focused
+FastPing exposes only essential settings. The interface is intentionally simple, eliminating unnecessary options while managing complexity internally.
 
-Download the latest FastPing.exe for Windows.
+---
 
-Place the .exe file in any folder you prefer.
+## Installation
 
-Double-click FastPing.exe to launch the application.
+1. Navigate to the **Releases** page of this repository.
+2. Download the latest `FastPing.exe` for Windows.
+3. Place the executable in any directory of your choice.
+4. Double-click the executable to launch FastPing.
 
-Safe & Trusted
+---
 
-FastPing is safe to use. It only monitors system resources and adjusts network and Java settings on your own computer.
-For security, build the executable yourself from the provided Python script.
+## Security and Transparency
 
-Support
+FastPing is safe to use. It monitors system resources and adjusts network-related and Java-related settings locally on your machine.
 
-For questions, suggestions, or help, join our Discord server: https://discord.gg/T8GFc6ryGy
+For maximum transparency and security, users are encouraged to build the executable themselves using the provided Python source code included in this repository.
+
+---
+
+## Support
+
+For questions, suggestions, or assistance, join the official Discord server:
+
+https://discord.gg/T8GFc6ryGy
+
+---
+
+## Platform Support
+
+- Windows 10
+- Windows 11
+
+Administrator privileges may be required for certain optimizations.
+
+---
+
+## Disclaimer
+
+FastPing modifies system configuration settings. While all changes are reversible and non-invasive, use at your own discretion.
