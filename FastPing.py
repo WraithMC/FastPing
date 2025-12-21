@@ -1,6 +1,6 @@
 import ctypes, sys, os, math, subprocess, time, json, winreg, webbrowser
 from pathlib import Path
-from PIL import Image, ImageTk
+from PIL import Image
 import customtkinter as ctk
 import psutil
 from tkinter import messagebox
@@ -24,7 +24,7 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
-CONFIG_DIR = Path(os.getenv("APPDATA", "")) / ".minecraft" / "FastPing" /  "config"/ "Config"
+CONFIG_DIR = Path(os.getenv("APPDATA", "")) / ".minecraft" / "FastPing" / "config" / "Config"
 CONFIG_DIR.mkdir(parents=True, exist_ok=True)
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
@@ -36,19 +36,20 @@ ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("dark-blue")
 
 APP_SIZE = "980x620"
-BG = "#0b0f14"
-PANEL = "#071118"
-SUBPANEL = "#0d1720"
-ACCENT_A = "#7C4DFF"
-ACCENT_B = "#00D1FF"
-ACCENT = ("#7C4DFF", "#00D1FF")
-TEXT = "#E6EDF3"
-MUTED = "#9AA5B1"
-CARD = "#0f1720"
-BUTTON_BG = "#0f222a"
-BUTTON_HOVER = "#111823"
-BUTTON_BORDER = "#15232a"
-SHADOW = "#061014"
+BG = "#000000"
+TEXT = "#FFFFFF"
+ACCENT = "#FFFFFF"
+BUTTON_BG = "#111111"
+BUTTON_HOVER = "#222222"
+BUTTON_BORDER = "#333333"
+
+PANEL = BG
+SUBPANEL = BG
+ACCENT_A = ACCENT
+ACCENT_B = ACCENT
+MUTED = "#AAAAAA"
+CARD = BG
+SHADOW = BG
 
 PRIORITY_CLASSES = {
     "Idle": getattr(psutil, "IDLE_PRIORITY_CLASS", 64),
@@ -130,7 +131,7 @@ def save_config():
             json.dump(cfg, f, indent=2)
         status_var.set("Settings saved")
     except Exception:
-        status_var.set(f"Save failed")
+        status_var.set("Save failed")
 
 def load_config():
     try:
@@ -260,7 +261,7 @@ def apply_settings():
         apply_connection_profile(connection_var.get())
         apply_tcp_tweaks(bool(smart_packets_var.get()))
         set_low_latency_mode(bool(low_latency_var.get()))
-        changed = set_java_priority(priority_var.get())
+        set_java_priority(priority_var.get())
         status_var.set("Settings applied")
     except Exception:
         status_var.set("Apply failed")
@@ -284,8 +285,8 @@ def open_discord():
 def load_logo(path, size):
     try:
         img = Image.open(path).convert("RGBA")
-        img = img.resize(size, Image.LANCZOS)
-        return ImageTk.PhotoImage(img)
+        img = ctk.CTkImage(img, size=size)
+        return img
     except Exception:
         return None
 
@@ -321,7 +322,7 @@ left_h = ctk.CTkFrame(header, fg_color=SUBPANEL, corner_radius=8)
 left_h.pack(side="left", padx=12, pady=8)
 if logo_img:
     ctk.CTkLabel(left_h, image=logo_img, text="").pack(side="left", padx=(0,10))
-ctk.CTkLabel(left_h, text="FastPing", font=("Segoe UI", 22, "bold"), text_color=ACCENT_A).pack(side="left")
+ctk.CTkLabel(left_h, text="FastPing", font=("Segoe UI", 22, "bold"), text_color=TEXT).pack(side="left")
 
 center_h = ctk.CTkFrame(header, fg_color=SUBPANEL)
 center_h.pack(side="left", padx=6, pady=8, expand=True, fill="x")
@@ -330,7 +331,7 @@ ctk.CTkLabel(center_h, text="", font=("Segoe UI", 11), text_color=MUTED).pack(an
 right_h = ctk.CTkFrame(header, fg_color=SUBPANEL)
 right_h.pack(side="right", padx=12, pady=8)
 ctk.CTkButton(right_h, text="Join Discord", command=open_discord, fg_color=BUTTON_BG, hover_color=BUTTON_HOVER, text_color=TEXT, corner_radius=10, width=120, border_width=1, border_color=BUTTON_BORDER).pack(side="right", padx=8)
-ctk.CTkButton(right_h, text="Apply", command=apply_settings, fg_color=ACCENT_A, hover_color=ACCENT_B, text_color="#0b0f14", corner_radius=10, width=120).pack(side="right", padx=8)
+ctk.CTkButton(right_h, text="Apply", command=apply_settings, fg_color=ACCENT, hover_color=ACCENT, text_color=BG, corner_radius=10, width=120).pack(side="right", padx=8)
 
 content = ctk.CTkFrame(main, fg_color=BG, corner_radius=12)
 content.pack(fill="both", expand=True, padx=6, pady=6)
@@ -345,15 +346,15 @@ ctk.CTkLabel(left, text="Network", font=("Segoe UI", 15, "bold"), text_color=TEX
 net_card = ctk.CTkFrame(left, fg_color=SUBPANEL, corner_radius=10)
 net_card.pack(fill="x", padx=12, pady=6)
 ctk.CTkLabel(net_card, text="Download", text_color=MUTED).grid(row=0, column=0, sticky="w", padx=12, pady=10)
-ctk.CTkLabel(net_card, textvariable=download_speed_var, text_color=ACCENT_B).grid(row=0, column=1, sticky="e", padx=12, pady=10)
+ctk.CTkLabel(net_card, textvariable=download_speed_var, text_color=ACCENT).grid(row=0, column=1, sticky="e", padx=12, pady=10)
 ctk.CTkLabel(net_card, text="Upload", text_color=MUTED).grid(row=1, column=0, sticky="w", padx=12, pady=(0,12))
-ctk.CTkLabel(net_card, textvariable=upload_speed_var, text_color=ACCENT_B).grid(row=1, column=1, sticky="e", padx=12, pady=(0,12))
+ctk.CTkLabel(net_card, textvariable=upload_speed_var, text_color=ACCENT).grid(row=1, column=1, sticky="e", padx=12, pady=(0,12))
 
 ctk.CTkLabel(left, text="Features", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
 feat = ctk.CTkFrame(left, fg_color=SUBPANEL, corner_radius=10)
 feat.pack(fill="x", padx=12, pady=8)
-ctk.CTkCheckBox(feat, text="Smart Packets", variable=smart_packets_var, hover_color=ACCENT_A, text_color=TEXT, fg_color="#09111a").pack(anchor="w", padx=12, pady=8)
-ctk.CTkCheckBox(feat, text="Low Latency Mode", variable=low_latency_var, hover_color=ACCENT_A, text_color=TEXT, fg_color="#09111a").pack(anchor="w", padx=12, pady=(0,8))
+ctk.CTkCheckBox(feat, text="Smart Packets", variable=smart_packets_var, hover_color=ACCENT, text_color=TEXT, fg_color=BG).pack(anchor="w", padx=12, pady=8)
+ctk.CTkCheckBox(feat, text="Low Latency Mode", variable=low_latency_var, hover_color=ACCENT, text_color=TEXT, fg_color=BG).pack(anchor="w", padx=12, pady=(0,8))
 
 actions = ctk.CTkFrame(left, fg_color=SUBPANEL, corner_radius=10)
 actions.pack(fill="x", padx=12, pady=(6,12))
@@ -365,13 +366,13 @@ ctk.CTkLabel(right, text="System", font=("Segoe UI", 15, "bold"), text_color=TEX
 sys_card = ctk.CTkFrame(right, fg_color=SUBPANEL, corner_radius=10)
 sys_card.pack(fill="x", padx=12, pady=6)
 ctk.CTkLabel(sys_card, text="CPU", text_color=MUTED).grid(row=0, column=0, sticky="w", padx=12, pady=10)
-ctk.CTkLabel(sys_card, textvariable=cpu_usage_var, text_color=ACCENT_A).grid(row=0, column=1, sticky="e", padx=12, pady=10)
+ctk.CTkLabel(sys_card, textvariable=cpu_usage_var, text_color=ACCENT).grid(row=0, column=1, sticky="e", padx=12, pady=10)
 ctk.CTkLabel(sys_card, text="RAM", text_color=MUTED).grid(row=1, column=0, sticky="w", padx=12, pady=(0,12))
-ctk.CTkLabel(sys_card, textvariable=ram_usage_var, text_color=ACCENT_A).grid(row=1, column=1, sticky="e", padx=12, pady=(0,12))
+ctk.CTkLabel(sys_card, textvariable=ram_usage_var, text_color=ACCENT).grid(row=1, column=1, sticky="e", padx=12, pady=(0,12))
 
-cpu_bar = ctk.CTkProgressBar(right, width=240, progress_color=ACCENT_A)
+cpu_bar = ctk.CTkProgressBar(right, width=240, progress_color=ACCENT)
 cpu_bar.pack(fill="x", padx=18, pady=(8,8))
-ram_bar = ctk.CTkProgressBar(right, width=240, progress_color=ACCENT_B)
+ram_bar = ctk.CTkProgressBar(right, width=240, progress_color=ACCENT)
 ram_bar.pack(fill="x", padx=18, pady=(0,12))
 
 ctk.CTkLabel(right, text="Java Priority", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
@@ -382,12 +383,12 @@ ctk.CTkLabel(right, text="Connection Profile", text_color=TEXT).pack(anchor="w",
 ctk.CTkOptionMenu(right, values=["Fiber","DSL","Cable","Satellite","Mobile"], variable=connection_var, fg_color=BUTTON_BG, text_color=TEXT, button_color=BUTTON_BG).pack(fill="x", padx=12, pady=8)
 
 ctk.CTkLabel(left, text="Responsiveness", text_color=TEXT).pack(anchor="w", padx=12, pady=(6,0))
-ctk.CTkSlider(left, from_=0, to=100, variable=responsiveness_var, progress_color=ACCENT_A, button_color=ACCENT_B).pack(fill="x", padx=12, pady=(4,10))
+ctk.CTkSlider(left, from_=0, to=100, variable=responsiveness_var, progress_color=ACCENT, button_color=ACCENT).pack(fill="x", padx=12, pady=(4,10))
 
 footer = ctk.CTkFrame(main, fg_color=SUBPANEL, corner_radius=10)
 footer.pack(fill="x", padx=6, pady=(8,6))
 ctk.CTkLabel(footer, textvariable=status_var, anchor="w", text_color=MUTED).pack(side="left", padx=12)
-ctk.CTkLabel(footer, text="v2.5", anchor="e", text_color=MUTED).pack(side="right", padx=12)
+ctk.CTkLabel(footer, text="v2.6", anchor="e", text_color=MUTED).pack(side="right", padx=12)
 
 load_config()
 init_net_counters()
