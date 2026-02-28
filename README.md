@@ -1,6 +1,7 @@
 # FastPing
 
-FastPing is a lightweight Windows utility designed to optimize system-level network behavior for improved responsiveness in online applications and games. By tuning existing operating system and runtime settings, FastPing enhances connection stability without modifying games or violating platform rules.
+FastPing is a and ping improvement application for Minecraft PvP and other games which support windows and Linux.
+It's open source and the official website is fastping.vercel.app 
 
 ---
 
